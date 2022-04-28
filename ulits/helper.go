@@ -42,3 +42,15 @@ func GetToken(uuid, username string, role int) (string, error) {
 	}
 	return tokenString, nil
 }
+
+// AnalyseToken 解析 token
+func AnalyseToken(tokenString string) (*UserInfo, error) {
+	UserInfo := &UserInfo{}
+	claims, err := jwt.ParseWithClaims(tokenString, UserInfo, func(token *jwt.Token) (interface{}, error) {
+		return tokenKey, nil
+	})
+	if err != nil || !claims.Valid {
+		return nil, err
+	}
+	return UserInfo, nil
+}
