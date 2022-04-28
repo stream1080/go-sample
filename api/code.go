@@ -11,4 +11,6 @@ var (
 	ResultError     = NewError(500, "response result error")
 	DatabaseError   = NewError(598, "database err")
 	CSRFDetected    = NewError(599, "csrf attack detected")
+
+	UserError = NewError(5001, "username or password error")
 )
