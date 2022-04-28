@@ -1,0 +1,19 @@
+info:
+  contact: {}
+paths:
+  /user-info:
+    get:
+      parameters:
+      - description: id
+        in: query
+        name: id
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":"","msg":""}'
+          schema:
+            type: string
+      summary: 用户详情
+      tags:
+      - 公共方法
+swagger: "2.0"
