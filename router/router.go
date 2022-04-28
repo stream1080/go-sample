@@ -20,5 +20,7 @@ func Router() *gin.Engine {
 
 	r.POST("/user-login", service.Login)
 
+	r.POST("/user/register", service.Register)
+
 	return r
 }

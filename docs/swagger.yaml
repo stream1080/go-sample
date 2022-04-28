@@ -35,4 +35,34 @@ paths:
       summary: 用户登录
       tags:
       - 公共方法
+  /user/register:
+    post:
+      parameters:
+      - description: code
+        in: formData
+        name: code
+        required: true
+        type: string
+      - description: username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: mobile
+        in: formData
+        name: mobile
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 用户注册
+      tags:
+      - 公共方法
 swagger: "2.0"

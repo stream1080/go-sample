@@ -10,6 +10,75 @@ import (
 	"gorm.io/gorm"
 )
 
+// Register
+// @Tags 公共方法
+// @Summary 用户注册
+// @Param code formData string true "code"
+// @Param username formData string true "username"
+// @Param password formData string true "password"
+// @Param mobile formData string false "mobile"
+// @Success 200 {string} json "{"code":"200","data":""}"
+// @Router /user/register [post]
+func Register(c *gin.Context) {
+	var (
+		res      = api.NewResult(c)
+		username = c.PostForm("username")
+		password = c.PostForm("password")
+		mobile   = c.PostForm("mobile")
+		code     = c.PostForm("code")
+	)
+	if code == "" || username == "" || password == "" {
+		res.Error(api.InvalidArgs)
+		return
+	}
+	// 验证验证码是否正确
+	verificationCode, err := models.Redis.Get(mobile).Result()
+	if err != nil {
+		log.Printf("Get Code Error:%v \n", err)
+		res.Error(api.CodeExpire)
+		return
+	}
+	if verificationCode != code {
+		res.Error(api.CodeError)
+		return
+	}
+	// 判断邮箱是否已存在
+	var cnt int64
+	err = models.DB.Where("mobile = ?", mobile).Model(new(models.User)).Count(&cnt).Error
+	if err != nil {
+		res.Error(api.DatabaseError)
+		return
+	}
+	if cnt > 0 {
+		res.Error(api.UserExist)
+		return
+	}
+
+	// 数据的插入
+	uuid := ulits.GetUUID()
+	user := &models.User{
+		UUID:     uuid,
+		UserName: username,
+		Password: ulits.GetMd5(password),
+		Mobile:   mobile,
+	}
+	err = models.DB.Create(user).Error
+	if err != nil {
+		res.Error(api.DatabaseError)
+		return
+	}
+
+	// 生成 token
+	token, err := ulits.GetToken(user.UUID, user.UserName, user.Role)
+	if err != nil {
+		res.Error(api.ResultError)
+		return
+	}
+	res.Success(map[string]interface{}{
+		"token": token,
+	})
+}
+
 // Login
 // @Tags 公共方法
 // @Summary 用户登录

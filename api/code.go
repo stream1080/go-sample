@@ -12,5 +12,8 @@ var (
 	DatabaseError   = NewError(598, "database err")
 	CSRFDetected    = NewError(599, "csrf attack detected")
 
-	UserError = NewError(5001, "username or password error")
+	UserError  = NewError(5001, "username or password error")
+	CodeExpire = NewError(5002, "verification expire")
+	CodeError  = NewError(5003, "verification error")
+	UserExist  = NewError(5004, "user Exist")
 )
