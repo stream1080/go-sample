@@ -7,18 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AuthAdminCheck is a middleware function that checks if the user is authenticated with admin role.
+// AuthLogin 登录校验中间件
 func AuthLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		res := api.NewResult(c)
 		auth := c.GetHeader("Authorization")
 		user, err := ulits.AnalyseToken(auth)
-		if err != nil {
-			c.Abort()
-			res.Error(api.Forbidden)
-			return
-		}
-		if user == nil {
+		if err != nil || user == nil {
 			c.Abort()
 			res.Error(api.Forbidden)
 			return
