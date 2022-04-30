@@ -1,38 +1,7 @@
 info:
   contact: {}
 paths:
-  /send/code:
-    post:
-      parameters:
-      - description: email
-        in: formData
-        name: email
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{"code":"200","data":""}'
-          schema:
-            type: string
-      summary: 发送邮件验证码
-      tags:
-      - 公共方法
-  /user-info:
-    get:
-      parameters:
-      - description: id
-        in: query
-        name: id
-        type: string
-      responses:
-        "200":
-          description: '{"code":"200","data":"","msg":""}'
-          schema:
-            type: string
-      summary: 用户详情
-      tags:
-      - 公共方法
-  /user-login:
+  /login:
     post:
       parameters:
       - description: username
@@ -50,8 +19,8 @@ paths:
             type: string
       summary: 用户登录
       tags:
-      - 公共方法
-  /user/register:
+      - 用户管理
+  /register:
     post:
       parameters:
       - description: code
@@ -80,5 +49,41 @@ paths:
             type: string
       summary: 用户注册
       tags:
+      - 用户管理
+  /send/code:
+    post:
+      parameters:
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 发送邮件验证码
+      tags:
       - 公共方法
+  /user/info:
+    get:
+      parameters:
+      - description: authorization
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: id
+        in: query
+        name: id
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":"","msg":""}'
+          schema:
+            type: string
+      summary: 用户详情
+      tags:
+      - 用户管理
 swagger: "2.0"

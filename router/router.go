@@ -2,6 +2,7 @@ package router
 
 import (
 	_ "demo/docs"
+	"demo/middlewares"
 	"demo/service"
 
 	"github.com/gin-gonic/gin"
@@ -11,18 +12,17 @@ import (
 
 func Router() *gin.Engine {
 	r := gin.Default()
+	r.Use(middlewares.Cors())
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	// 路由规则
+	// 公共方法
 	r.GET("/", service.Index)
-
-	r.GET("/user-info", service.GetUserInfo)
-
-	r.POST("/user-login", service.Login)
-
-	r.POST("/user/register", service.Register)
-
+	r.POST("/login", service.Login)
+	r.POST("/register", service.Register)
 	r.POST("/send/code", service.SendCode)
+
+	authLogin := r.Group("/user", middlewares.AuthLogin())
+	authLogin.GET("/info", service.GetUserInfo)
 
 	return r
 }

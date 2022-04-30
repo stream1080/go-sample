@@ -5,6 +5,7 @@ import (
 	"demo/models"
 	"demo/ulits"
 	"log"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -24,7 +25,7 @@ func SendCode(c *gin.Context) {
 		return
 	}
 	code := ulits.GetCode()
-	_, err := models.Redis.Set(email, code, 5).Result()
+	_, err := models.Redis.Set(email, code, 5*60*time.Minute).Result()
 	if err != nil {
 		log.Printf("Set Code Error:%v \n", err)
 		res.Error(api.ResultError)
@@ -35,14 +36,14 @@ func SendCode(c *gin.Context) {
 }
 
 // Register
-// @Tags 公共方法
+// @Tags 用户管理
 // @Summary 用户注册
 // @Param code formData string true "code"
 // @Param username formData string true "username"
 // @Param password formData string true "password"
 // @Param mobile formData string false "mobile"
 // @Success 200 {string} json "{"code":"200","data":""}"
-// @Router /user/register [post]
+// @Router /register [post]
 func Register(c *gin.Context) {
 	var (
 		res      = api.NewResult(c)
@@ -104,12 +105,12 @@ func Register(c *gin.Context) {
 }
 
 // Login
-// @Tags 公共方法
+// @Tags 用户管理
 // @Summary 用户登录
 // @Param username formData string false "username"
 // @Param password formData string false "password"
 // @Success 200 {string} json "{"code":"200","data":"","msg":""}"
-// @Router /user-login [post]
+// @Router /login [post]
 func Login(c *gin.Context) {
 	res := api.NewResult(c)
 	user := new(models.User)
@@ -145,11 +146,12 @@ func Login(c *gin.Context) {
 }
 
 // GetUserInfo
-// @Tags 公共方法
+// @Tags 用户管理
 // @Summary 用户详情
+// @Param authorization header string true "authorization"
 // @Param id query string false "id"
 // @Success 200 {string} json "{"code":"200","data":"","msg":""}"
-// @Router /user-info [get]
+// @Router /user/info [get]
 func GetUserInfo(c *gin.Context) {
 	res := api.NewResult(c)
 	id := c.Query("id")

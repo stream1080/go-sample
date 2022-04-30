@@ -16,59 +16,10 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/send/code": {
+        "/login": {
             "post": {
                 "tags": [
-                    "公共方法"
-                ],
-                "summary": "发送邮件验证码",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"code\":\"200\",\"data\":\"\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-info": {
-            "get": {
-                "tags": [
-                    "公共方法"
-                ],
-                "summary": "用户详情",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"code\":\"200\",\"data\":\"\",\"msg\":\"\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-login": {
-            "post": {
-                "tags": [
-                    "公共方法"
+                    "用户管理"
                 ],
                 "summary": "用户登录",
                 "parameters": [
@@ -95,10 +46,10 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/register": {
+        "/register": {
             "post": {
                 "tags": [
-                    "公共方法"
+                    "用户管理"
                 ],
                 "summary": "用户注册",
                 "parameters": [
@@ -133,6 +84,62 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"code\":\"200\",\"data\":\"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/send/code": {
+            "post": {
+                "tags": [
+                    "公共方法"
+                ],
+                "summary": "发送邮件验证码",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":\"200\",\"data\":\"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/info": {
+            "get": {
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "用户详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "authorization",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":\"200\",\"data\":\"\",\"msg\":\"\"}",
                         "schema": {
                             "type": "string"
                         }
