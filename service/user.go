@@ -10,6 +10,30 @@ import (
 	"gorm.io/gorm"
 )
 
+// SendCode
+// @Tags 公共方法
+// @Summary 发送邮件验证码
+// @Param email formData string true "email"
+// @Success 200 {string} json "{"code":"200","data":""}"
+// @Router /send/code [post]
+func SendCode(c *gin.Context) {
+	res := api.NewResult(c)
+	email := c.PostForm("email")
+	if email == "" {
+		res.Error(api.InvalidArgs)
+		return
+	}
+	code := ulits.GetCode()
+	_, err := models.Redis.Set(email, code, 5).Result()
+	if err != nil {
+		log.Printf("Set Code Error:%v \n", err)
+		res.Error(api.ResultError)
+		return
+	}
+	content := []byte("您的验证码为：" + code + ", 5分钟内有效，请及时操作。")
+	ulits.SendMail(email, content)
+}
+
 // Register
 // @Tags 公共方法
 // @Summary 用户注册

@@ -1,6 +1,22 @@
 info:
   contact: {}
 paths:
+  /send/code:
+    post:
+      parameters:
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 发送邮件验证码
+      tags:
+      - 公共方法
   /user-info:
     get:
       parameters:
