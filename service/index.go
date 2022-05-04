@@ -1,7 +1,7 @@
 package service
 
 import (
-	"demo/api"
+	"gin-demo/api"
 
 	"github.com/gin-gonic/gin"
 )

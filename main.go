@@ -1,6 +1,6 @@
 package main
 
-import "demo/router"
+import "gin-demo/router"
 
 func main() {
 	r := router.Router()

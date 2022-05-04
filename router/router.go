@@ -1,9 +1,9 @@
 package router
 
 import (
-	_ "demo/docs"
-	"demo/middlewares"
-	"demo/service"
+	_ "gin-demo/docs"
+	"gin-demo/middlewares"
+	"gin-demo/service"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"

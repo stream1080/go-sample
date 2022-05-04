@@ -1,8 +1,8 @@
 package middlewares
 
 import (
-	"demo/api"
-	"demo/ulits"
+	"gin-demo/api"
+	"gin-demo/ulits"
 
 	"github.com/gin-gonic/gin"
 )

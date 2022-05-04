@@ -1,9 +1,9 @@
 package service
 
 import (
-	"demo/api"
-	"demo/models"
-	"demo/ulits"
+	"gin-demo/api"
+	"gin-demo/models"
+	"gin-demo/ulits"
 	"log"
 	"time"
 
