@@ -26,6 +26,9 @@ func main() {
 	// 第二种，入参为流
 	clientSearchIn(client)
 
+	//第三种，出参为流
+	clientSearchOut(client)
+
 }
 
 func clientSearch(client pd.SearchServiceClient) {
@@ -56,5 +59,23 @@ func clientSearchIn(client pd.SearchServiceClient) {
 	}
 	if err != nil {
 		log.Fatalf("client.SearchIn err: %v", err)
+	}
+}
+
+func clientSearchOut(client pd.SearchServiceClient) {
+	req := &pd.SearchRequest{
+		Request: "clientSearchOut",
+	}
+	resp, err := client.SearchOut(context.Background(), req)
+	if err != nil {
+		log.Fatalf("resp.Recv() err: %v", err)
+	}
+
+	for {
+		r, err := resp.Recv()
+		if err != nil {
+			log.Fatalf("client.SearchIn err: %v", err)
+		}
+		log.Printf("SearchOut req: %+v", r)
 	}
 }

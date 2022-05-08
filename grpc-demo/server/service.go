@@ -52,6 +52,12 @@ func (s *SearchService) SearchIn(server pd.SearchService_SearchInServer) error {
 }
 
 func (s *SearchService) SearchOut(req *pd.SearchRequest, server pd.SearchService_SearchOutServer) error {
+	for i := 1; i <= 10; i++ {
+		server.Send(&pd.SearchResponse{
+			Response: req.Request,
+			Value:    req.Value,
+		})
+	}
 	return nil
 }
 
