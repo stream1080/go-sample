@@ -1,0 +1,32 @@
+
+pkg
+bin
+
+# vscode
+.vscode
+.idea
+
+# vim
+*.swp
+*.rdb
+
+# binary
+
+
+# go vendor
+vendor
+
+# log
+*.log
+
+# mac
+.DS_Store
+
+# gogland
+.idea
+
+# paw
+*.paw
+
+# dev config
+*.dev.ini
