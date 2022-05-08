@@ -4,7 +4,7 @@
 // - protoc             v3.19.4
 // source: proto/search.proto
 
-package pd
+package proto
 
 import (
 	context "context"
@@ -23,6 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SearchServiceClient interface {
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
+	SearchIn(ctx context.Context, opts ...grpc.CallOption) (SearchService_SearchInClient, error)
+	SearchOut(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (SearchService_SearchOutClient, error)
+	SearchIO(ctx context.Context, opts ...grpc.CallOption) (SearchService_SearchIOClient, error)
 }
 
 type searchServiceClient struct {
@@ -35,11 +38,108 @@ func NewSearchServiceClient(cc grpc.ClientConnInterface) SearchServiceClient {
 
 func (c *searchServiceClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
 	out := new(SearchResponse)
-	err := c.cc.Invoke(ctx, "/pd.SearchService/Search", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.SearchService/Search", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
+}
+
+func (c *searchServiceClient) SearchIn(ctx context.Context, opts ...grpc.CallOption) (SearchService_SearchInClient, error) {
+	stream, err := c.cc.NewStream(ctx, &SearchService_ServiceDesc.Streams[0], "/proto.SearchService/SearchIn", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &searchServiceSearchInClient{stream}
+	return x, nil
+}
+
+type SearchService_SearchInClient interface {
+	Send(*SearchRequest) error
+	CloseAndRecv() (*SearchResponse, error)
+	grpc.ClientStream
+}
+
+type searchServiceSearchInClient struct {
+	grpc.ClientStream
+}
+
+func (x *searchServiceSearchInClient) Send(m *SearchRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *searchServiceSearchInClient) CloseAndRecv() (*SearchResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(SearchResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *searchServiceClient) SearchOut(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (SearchService_SearchOutClient, error) {
+	stream, err := c.cc.NewStream(ctx, &SearchService_ServiceDesc.Streams[1], "/proto.SearchService/SearchOut", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &searchServiceSearchOutClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type SearchService_SearchOutClient interface {
+	Recv() (*SearchResponse, error)
+	grpc.ClientStream
+}
+
+type searchServiceSearchOutClient struct {
+	grpc.ClientStream
+}
+
+func (x *searchServiceSearchOutClient) Recv() (*SearchResponse, error) {
+	m := new(SearchResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *searchServiceClient) SearchIO(ctx context.Context, opts ...grpc.CallOption) (SearchService_SearchIOClient, error) {
+	stream, err := c.cc.NewStream(ctx, &SearchService_ServiceDesc.Streams[2], "/proto.SearchService/SearchIO", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &searchServiceSearchIOClient{stream}
+	return x, nil
+}
+
+type SearchService_SearchIOClient interface {
+	Send(*SearchRequest) error
+	Recv() (*SearchResponse, error)
+	grpc.ClientStream
+}
+
+type searchServiceSearchIOClient struct {
+	grpc.ClientStream
+}
+
+func (x *searchServiceSearchIOClient) Send(m *SearchRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *searchServiceSearchIOClient) Recv() (*SearchResponse, error) {
+	m := new(SearchResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // SearchServiceServer is the server API for SearchService service.
@@ -47,6 +147,9 @@ func (c *searchServiceClient) Search(ctx context.Context, in *SearchRequest, opt
 // for forward compatibility
 type SearchServiceServer interface {
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
+	SearchIn(SearchService_SearchInServer) error
+	SearchOut(*SearchRequest, SearchService_SearchOutServer) error
+	SearchIO(SearchService_SearchIOServer) error
 	mustEmbedUnimplementedSearchServiceServer()
 }
 
@@ -56,6 +159,15 @@ type UnimplementedSearchServiceServer struct {
 
 func (UnimplementedSearchServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
+}
+func (UnimplementedSearchServiceServer) SearchIn(SearchService_SearchInServer) error {
+	return status.Errorf(codes.Unimplemented, "method SearchIn not implemented")
+}
+func (UnimplementedSearchServiceServer) SearchOut(*SearchRequest, SearchService_SearchOutServer) error {
+	return status.Errorf(codes.Unimplemented, "method SearchOut not implemented")
+}
+func (UnimplementedSearchServiceServer) SearchIO(SearchService_SearchIOServer) error {
+	return status.Errorf(codes.Unimplemented, "method SearchIO not implemented")
 }
 func (UnimplementedSearchServiceServer) mustEmbedUnimplementedSearchServiceServer() {}
 
@@ -80,7 +192,7 @@ func _SearchService_Search_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pd.SearchService/Search",
+		FullMethod: "/proto.SearchService/Search",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SearchServiceServer).Search(ctx, req.(*SearchRequest))
@@ -88,11 +200,84 @@ func _SearchService_Search_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SearchService_SearchIn_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(SearchServiceServer).SearchIn(&searchServiceSearchInServer{stream})
+}
+
+type SearchService_SearchInServer interface {
+	SendAndClose(*SearchResponse) error
+	Recv() (*SearchRequest, error)
+	grpc.ServerStream
+}
+
+type searchServiceSearchInServer struct {
+	grpc.ServerStream
+}
+
+func (x *searchServiceSearchInServer) SendAndClose(m *SearchResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *searchServiceSearchInServer) Recv() (*SearchRequest, error) {
+	m := new(SearchRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _SearchService_SearchOut_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(SearchRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(SearchServiceServer).SearchOut(m, &searchServiceSearchOutServer{stream})
+}
+
+type SearchService_SearchOutServer interface {
+	Send(*SearchResponse) error
+	grpc.ServerStream
+}
+
+type searchServiceSearchOutServer struct {
+	grpc.ServerStream
+}
+
+func (x *searchServiceSearchOutServer) Send(m *SearchResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _SearchService_SearchIO_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(SearchServiceServer).SearchIO(&searchServiceSearchIOServer{stream})
+}
+
+type SearchService_SearchIOServer interface {
+	Send(*SearchResponse) error
+	Recv() (*SearchRequest, error)
+	grpc.ServerStream
+}
+
+type searchServiceSearchIOServer struct {
+	grpc.ServerStream
+}
+
+func (x *searchServiceSearchIOServer) Send(m *SearchResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *searchServiceSearchIOServer) Recv() (*SearchRequest, error) {
+	m := new(SearchRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // SearchService_ServiceDesc is the grpc.ServiceDesc for SearchService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var SearchService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pd.SearchService",
+	ServiceName: "proto.SearchService",
 	HandlerType: (*SearchServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -100,6 +285,23 @@ var SearchService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _SearchService_Search_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "SearchIn",
+			Handler:       _SearchService_SearchIn_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "SearchOut",
+			Handler:       _SearchService_SearchOut_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "SearchIO",
+			Handler:       _SearchService_SearchIO_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "proto/search.proto",
 }
