@@ -62,5 +62,27 @@ func (s *SearchService) SearchOut(req *pd.SearchRequest, server pd.SearchService
 }
 
 func (s *SearchService) SearchIO(servier pd.SearchService_SearchIOServer) error {
+	str := make(chan string)
+	go func() {
+		for i := 1; i <= 10; i++ {
+			req, err := servier.Recv()
+			if err != nil {
+				str <- "结束"
+				break
+			}
+			str <- req.Request
+			log.Printf("servier.Recv(): %s", req.Request)
+		}
+	}()
+
+	for {
+		s := <-str
+		if s == "结束" {
+			break
+		}
+		servier.Send(&pd.SearchResponse{
+			Response: s,
+		})
+	}
 	return nil
 }

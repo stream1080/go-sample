@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"sync"
 
 	pd "grpc-demo/proto"
 
@@ -28,6 +29,9 @@ func main() {
 
 	//第三种，出参为流
 	clientSearchOut(client)
+
+	//第四种，出入为流
+	clientSearchIO(client)
 
 }
 
@@ -58,7 +62,7 @@ func clientSearchIn(client pd.SearchServiceClient) {
 		}
 	}
 	if err != nil {
-		log.Fatalf("client.SearchIn err: %v", err)
+		log.Printf("client.SearchIn err: %v", err)
 	}
 }
 
@@ -74,8 +78,41 @@ func clientSearchOut(client pd.SearchServiceClient) {
 	for {
 		r, err := resp.Recv()
 		if err != nil {
-			log.Fatalf("client.SearchIn err: %v", err)
+			log.Printf("client.SearchOut err: %v", err)
+			break
 		}
 		log.Printf("SearchOut req: %+v", r)
 	}
+}
+
+func clientSearchIO(client pd.SearchServiceClient) {
+	resp, err := client.SearchIO(context.Background())
+	if err != nil {
+		log.Fatalf("resp.Recv() err: %v", err)
+	}
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+	go func() {
+		for {
+			err := resp.Send(&pd.SearchRequest{
+				Request: "SearchIO",
+			})
+			if err != nil {
+				wg.Done()
+				break
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			r, err := resp.Recv()
+			if err != nil {
+				wg.Done()
+				log.Fatalf("resp.Recv() err: %v", err)
+			}
+			log.Printf("SearchIO req: %+v", r)
+		}
+	}()
+	wg.Wait()
 }
