@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package pd;
+
+option go_package ="./pd";
+
+service SearchService {
+    rpc Search(SearchRequest) returns (SearchResponse) {}
+}
+
+message SearchRequest {
+    string request = 1;
+}
+
+message SearchResponse {
+    string response = 1;
+}
