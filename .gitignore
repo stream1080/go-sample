@@ -3,15 +3,13 @@ pkg
 bin
 
 # vscode
-.vscode
-.idea
+*.vscode
 
 # vim
 *.swp
 *.rdb
 
 # binary
-
 
 # go vendor
 vendor
@@ -23,7 +21,7 @@ vendor
 .DS_Store
 
 # gogland
-.idea
+*.idea
 
 # paw
 *.paw
