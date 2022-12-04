@@ -10,7 +10,16 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "https://github.com/stream108",
+        "contact": {
+            "name": "一江溪水",
+            "url": "https://github.com/stream1080",
+            "email": "example.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -38,7 +47,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"code\":\"200\",\"data\":\"\",\"msg\":\"\"}",
+                        "description": "{\"code\":\"200\",\"data\":\"\",\"msg\":\"success\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -55,13 +64,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "code",
-                        "name": "code",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "username",
                         "name": "username",
                         "in": "formData",
@@ -73,17 +75,11 @@ const docTemplate = `{
                         "name": "password",
                         "in": "formData",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "mobile",
-                        "name": "mobile",
-                        "in": "formData"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"code\":\"200\",\"data\":\"\"}",
+                        "description": "{\"code\":\"200\",\"msg\":\"success\",\"data\":\"\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -139,7 +135,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"code\":\"200\",\"data\":\"\",\"msg\":\"\"}",
+                        "description": "{\"code\":\"200\",\"data\":\"\",\"msg\":\"success\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -152,12 +148,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0",
+	Host:             "127.0.0.1:8080",
+	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Swagger Example API",
+	Description:      "This is a sample server celler server.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

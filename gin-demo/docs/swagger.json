@@ -1,8 +1,22 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This is a sample server celler server.",
+        "title": "Swagger Example API",
+        "termsOfService": "https://github.com/stream108",
+        "contact": {
+            "name": "一江溪水",
+            "url": "https://github.com/stream1080",
+            "email": "example.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
     },
+    "host": "127.0.0.1:8080",
+    "basePath": "/api/v1",
     "paths": {
         "/login": {
             "post": {
@@ -26,7 +40,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"code\":\"200\",\"data\":\"\",\"msg\":\"\"}",
+                        "description": "{\"code\":\"200\",\"data\":\"\",\"msg\":\"success\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -43,13 +57,6 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "code",
-                        "name": "code",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "username",
                         "name": "username",
                         "in": "formData",
@@ -61,17 +68,11 @@
                         "name": "password",
                         "in": "formData",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "mobile",
-                        "name": "mobile",
-                        "in": "formData"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"code\":\"200\",\"data\":\"\"}",
+                        "description": "{\"code\":\"200\",\"msg\":\"success\",\"data\":\"\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -127,7 +128,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"code\":\"200\",\"data\":\"\",\"msg\":\"\"}",
+                        "description": "{\"code\":\"200\",\"data\":\"\",\"msg\":\"success\"}",
                         "schema": {
                             "type": "string"
                         }

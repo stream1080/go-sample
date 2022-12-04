@@ -42,7 +42,7 @@ func SendCode(c *gin.Context) {
 // @Param username formData string true "username"
 // @Param password formData string true "password"
 // @Param mobile formData string false "mobile"
-// @Success 200 {string} json "{"code":"200","data":""}"
+// @Success 200 {string} json "{"code":"200","msg":"success","data":""}"
 // @Router /register [post]
 func Register(c *gin.Context) {
 	var (
@@ -109,7 +109,7 @@ func Register(c *gin.Context) {
 // @Summary 用户登录
 // @Param username formData string false "username"
 // @Param password formData string false "password"
-// @Success 200 {string} json "{"code":"200","data":"","msg":""}"
+// @Success 200 {string} json "{"code":"200","data":"","msg":"success"}"
 // @Router /login [post]
 func Login(c *gin.Context) {
 	res := api.NewResult(c)
@@ -150,7 +150,7 @@ func Login(c *gin.Context) {
 // @Summary 用户详情
 // @Param authorization header string true "authorization"
 // @Param id query string false "id"
-// @Success 200 {string} json "{"code":"200","data":"","msg":""}"
+// @Success 200 {string} json "{"code":"200","data":"","msg":"success"}"
 // @Router /user/info [get]
 func GetUserInfo(c *gin.Context) {
 	res := api.NewResult(c)

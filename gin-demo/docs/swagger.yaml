@@ -1,5 +1,17 @@
+basePath: /api/v1
+host: 127.0.0.1:8080
 info:
-  contact: {}
+  contact:
+    email: example.com
+    name: 一江溪水
+    url: https://github.com/stream1080
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://github.com/stream108
+  title: Swagger Example API
+  version: "1.0"
 paths:
   /login:
     post:
@@ -14,7 +26,7 @@ paths:
         type: string
       responses:
         "200":
-          description: '{"code":"200","data":"","msg":""}'
+          description: '{"code":"200","data":"","msg":"success"}'
           schema:
             type: string
       summary: 用户登录
@@ -23,11 +35,6 @@ paths:
   /register:
     post:
       parameters:
-      - description: code
-        in: formData
-        name: code
-        required: true
-        type: string
       - description: username
         in: formData
         name: username
@@ -38,13 +45,9 @@ paths:
         name: password
         required: true
         type: string
-      - description: mobile
-        in: formData
-        name: mobile
-        type: string
       responses:
         "200":
-          description: '{"code":"200","data":""}'
+          description: '{"code":"200","msg":"success","data":""}'
           schema:
             type: string
       summary: 用户注册
@@ -80,7 +83,7 @@ paths:
         type: string
       responses:
         "200":
-          description: '{"code":"200","data":"","msg":""}'
+          description: '{"code":"200","data":"","msg":"success"}'
           schema:
             type: string
       summary: 用户详情
