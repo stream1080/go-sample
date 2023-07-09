@@ -1,15 +1,18 @@
-package service
+package controller
 
 import (
-	"gin-demo/api"
-	"gin-demo/models"
-	"gin-demo/ulits"
 	"log"
 	"time"
+
+	"gin-demo/models"
+	"gin-demo/ulits"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
+
+type UserApi struct {
+}
 
 // SendCode
 // @Tags 公共方法
@@ -17,22 +20,24 @@ import (
 // @Param email formData string true "email"
 // @Success 200 {string} json "{"code":"200","data":""}"
 // @Router /send/code [post]
-func SendCode(c *gin.Context) {
-	res := api.NewResult(c)
+func (u *UserApi) SendCode(c *gin.Context) {
+
 	email := c.PostForm("email")
 	if email == "" {
-		res.Error(api.InvalidArgs)
+		ResponseError(c, InvalidArgs)
 		return
 	}
 	code := ulits.GetCode()
 	_, err := models.Redis.Set(email, code, 5*60*time.Minute).Result()
 	if err != nil {
 		log.Printf("Set Code Error:%v \n", err)
-		res.Error(api.ResultError)
+		ResponseError(c, ServerError)
 		return
 	}
 	content := []byte("您的验证码为：" + code + ", 5分钟内有效，请及时操作。")
 	ulits.SendMail(email, content)
+
+	ResponseOK(c)
 }
 
 // Register
@@ -44,38 +49,37 @@ func SendCode(c *gin.Context) {
 // @Param mobile formData string false "mobile"
 // @Success 200 {string} json "{"code":"200","msg":"success","data":""}"
 // @Router /register [post]
-func Register(c *gin.Context) {
+func (u *UserApi) Register(c *gin.Context) {
 	var (
-		res      = api.NewResult(c)
 		username = c.PostForm("username")
 		password = c.PostForm("password")
 		mobile   = c.PostForm("mobile")
 		code     = c.PostForm("code")
 	)
 	if code == "" || username == "" || password == "" {
-		res.Error(api.InvalidArgs)
+		ResponseError(c, InvalidArgs)
 		return
 	}
 	// 验证验证码是否正确
 	verificationCode, err := models.Redis.Get(mobile).Result()
 	if err != nil {
 		log.Printf("Get Code Error:%v \n", err)
-		res.Error(api.CodeExpire)
+		ResponseError(c, CodeExpire)
 		return
 	}
 	if verificationCode != code {
-		res.Error(api.CodeError)
+		ResponseError(c, CodeError)
 		return
 	}
 	// 判断邮箱是否已存在
 	var cnt int64
 	err = models.DB.Where("mobile = ?", mobile).Model(new(models.User)).Count(&cnt).Error
 	if err != nil {
-		res.Error(api.DatabaseError)
+		ResponseError(c, ServerError)
 		return
 	}
 	if cnt > 0 {
-		res.Error(api.UserExist)
+		ResponseError(c, UserExist)
 		return
 	}
 
@@ -89,17 +93,18 @@ func Register(c *gin.Context) {
 	}
 	err = models.DB.Create(user).Error
 	if err != nil {
-		res.Error(api.DatabaseError)
+		ResponseError(c, ServerError)
 		return
 	}
 
 	// 生成 token
 	token, err := ulits.GetToken(user.UUID, user.UserName, user.Role)
 	if err != nil {
-		res.Error(api.ResultError)
+		ResponseError(c, ServerError)
 		return
 	}
-	res.Success(map[string]interface{}{
+
+	ResponseOK(c, map[string]interface{}{
 		"token": token,
 	})
 }
@@ -111,13 +116,12 @@ func Register(c *gin.Context) {
 // @Param password formData string false "password"
 // @Success 200 {string} json "{"code":"200","data":"","msg":"success"}"
 // @Router /login [post]
-func Login(c *gin.Context) {
-	res := api.NewResult(c)
+func (u *UserApi) Login(c *gin.Context) {
 	user := new(models.User)
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 	if username == "" || password == "" {
-		res.Error(api.InvalidArgs)
+		ResponseError(c, InvalidArgs)
 		return
 	}
 	// password = ulits.Md5(password)
@@ -125,24 +129,24 @@ func Login(c *gin.Context) {
 	err := models.DB.Where("username = ? and password = ?", username, password).First(&user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			res.Error(api.UserError)
+			ResponseError(c, InvalidArgs)
 			return
 		}
-		res.Error(api.DatabaseError)
+		ResponseError(c, ServerError)
 		log.Printf("Models err: %s", err)
 		return
 	}
 
 	token, err := ulits.GetToken(user.UUID, user.UserName, user.Role)
 	if err != nil {
-		res.Error(api.Unauthorized)
+		ResponseError(c, Unauthorized)
 		log.Printf("GetToken err: %s", err)
 		return
 	}
 	data := map[string]string{
 		"token": token,
 	}
-	res.Success(data)
+	ResponseOK(c, data)
 }
 
 // GetUserInfo
@@ -152,19 +156,18 @@ func Login(c *gin.Context) {
 // @Param id query string false "id"
 // @Success 200 {string} json "{"code":"200","data":"","msg":"success"}"
 // @Router /user/info [get]
-func GetUserInfo(c *gin.Context) {
-	res := api.NewResult(c)
+func (u *UserApi) GetUserInfo(c *gin.Context) {
 	id := c.Query("id")
 	if id == "" {
-
-		res.Error(api.InvalidArgs)
+		ResponseError(c, InvalidArgs)
 		return
 	}
 	data := new(models.User)
 	err := models.DB.Where("id = ?", id).Find(&data).Error
 	if err != nil {
-		res.Error(api.NeedRedirect)
+		ResponseError(c, InvalidArgs)
 		return
 	}
-	res.Success(data)
+
+	ResponseOK(c, data)
 }

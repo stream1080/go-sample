@@ -1,9 +1,9 @@
 package router
 
 import (
+	"gin-demo/controller"
 	_ "gin-demo/docs"
 	"gin-demo/middlewares"
-	"gin-demo/service"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -16,13 +16,13 @@ func Router() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	// 公共方法
-	r.GET("/", service.Index)
-	r.POST("/login", service.Login)
-	r.POST("/register", service.Register)
-	r.POST("/send/code", service.SendCode)
+	userApi := &controller.UserApi{}
+	r.POST("/login", userApi.Login)
+	r.POST("/register", userApi.Register)
+	r.POST("/send/code", userApi.SendCode)
 
 	authLogin := r.Group("/user", middlewares.AuthLogin())
-	authLogin.GET("/info", service.GetUserInfo)
+	authLogin.GET("/info", userApi.GetUserInfo)
 
 	return r
 }
