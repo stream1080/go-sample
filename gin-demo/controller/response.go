@@ -6,24 +6,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Result struct {
-	Code RespCode    `json:"code"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data"`
-}
-
-func Response(c *gin.Context, code RespCode, msg string, data ...interface{}) {
-	c.JSON(http.StatusOK, Result{
-		code,
-		msg,
-		data,
+func Response(c *gin.Context, code Code, msg interface{}, data interface{}) {
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg:": msg,
+		"data": data,
 	})
 }
 
-func ResponseOK(c *gin.Context, data ...interface{}) {
-	Response(c, OK, OK.Msg(), data)
+func ResponseOK(c *gin.Context, data interface{}) {
+	Response(c, SUCCESS, SUCCESS.Msg(), data)
 }
 
-func ResponseError(c *gin.Context, code RespCode) {
+func ResponseError(c *gin.Context, code Code) {
 	Response(c, code, code.Msg(), nil)
+}
+
+func ResponseErrorWith(c *gin.Context, code Code, msg interface{}) {
+	Response(c, code, msg, nil)
 }

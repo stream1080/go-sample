@@ -1,26 +1,27 @@
 package controller
 
-type RespCode int
+type Code int
 
 const (
-	OK              RespCode = 200
-	NeedRedirect    RespCode = 301
-	InvalidArgs     RespCode = 400
-	Unauthorized    RespCode = 401
-	Forbidden       RespCode = 403
-	NotFound        RespCode = 404
-	Conflict        RespCode = 409
-	TooManyRequests RespCode = 429
-	ServerError     RespCode = 500
+	SUCCESS         Code = 200
+	Redirect        Code = 301
+	InvalidArgs     Code = 400
+	Unauthorized    Code = 401
+	Forbidden       Code = 403
+	NotFound        Code = 404
+	Conflict        Code = 409
+	TooManyRequests Code = 429
+	ServerError     Code = 500
 
-	CodeExpire RespCode = 5001
-	CodeError  RespCode = 5002
-	UserExist  RespCode = 5003
+	_ = 1000 + iota
+	CodeExpire
+	CodeError
+	UserExist
 )
 
-var codeMsg = map[RespCode]string{
-	OK:              "ok",
-	NeedRedirect:    "need redirect",
+var codeMsg = map[Code]string{
+	SUCCESS:         "success",
+	Redirect:        "redirect",
 	InvalidArgs:     "invalid params",
 	Unauthorized:    "unauthorized",
 	Forbidden:       "forbidden",
@@ -34,8 +35,8 @@ var codeMsg = map[RespCode]string{
 	UserExist:  "user exist",
 }
 
-func (r RespCode) Msg() string {
-	msg, ok := codeMsg[r]
+func (c Code) Msg() string {
+	msg, ok := codeMsg[c]
 	if ok {
 		return msg
 	}

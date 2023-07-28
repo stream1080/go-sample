@@ -37,7 +37,7 @@ func (u *UserApi) SendCode(c *gin.Context) {
 	content := []byte("您的验证码为：" + code + ", 5分钟内有效，请及时操作。")
 	ulits.SendMail(email, content)
 
-	ResponseOK(c)
+	ResponseOK(c, nil)
 }
 
 // Register
