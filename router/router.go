@@ -1,9 +1,9 @@
 package router
 
 import (
-	"gin-demo/controller"
-	_ "gin-demo/docs"
-	"gin-demo/middlewares"
+	"go-sample/controller"
+	_ "go-sample/docs"
+	"go-sample/middlewares"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
