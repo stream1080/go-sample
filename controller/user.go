@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
-	"gin-demo/models"
-	"gin-demo/ulits"
+	"go-sample/models"
+	"go-sample/ulits"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
