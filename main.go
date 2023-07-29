@@ -1,6 +1,6 @@
 package main
 
-import "gin-demo/router"
+import "go-sample/router"
 
 // @title Swagger Example API
 // @version 1.0

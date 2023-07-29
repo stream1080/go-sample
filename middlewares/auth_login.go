@@ -1,8 +1,8 @@
 package middlewares
 
 import (
-	"gin-demo/controller"
-	"gin-demo/ulits"
+	"go-sample/controller"
+	"go-sample/ulits"
 
 	"github.com/gin-gonic/gin"
 )
