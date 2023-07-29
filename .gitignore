@@ -1,7 +1,4 @@
 
-pkg
-bin
-
 # vscode
 *.vscode
 
@@ -18,7 +15,7 @@ vendor
 *.log
 
 # mac
-.DS_Store
+*.DS_Store
 
 # gogland
 *.idea
