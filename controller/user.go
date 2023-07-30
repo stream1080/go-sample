@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"go-sample/models"
-	"go-sample/ulits"
+	"go-sample/pkg/ulits"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -37,7 +37,7 @@ func (u *UserApi) SendCode(c *gin.Context) {
 	content := []byte("您的验证码为：" + code + ", 5分钟内有效，请及时操作。")
 	ulits.SendMail(email, content)
 
-	ResponseOK(c, nil)
+	ResponseSuccess(c, nil)
 }
 
 // Register
@@ -104,7 +104,7 @@ func (u *UserApi) Register(c *gin.Context) {
 		return
 	}
 
-	ResponseOK(c, map[string]interface{}{
+	ResponseSuccess(c, map[string]interface{}{
 		"token": token,
 	})
 }
@@ -146,7 +146,7 @@ func (u *UserApi) Login(c *gin.Context) {
 	data := map[string]string{
 		"token": token,
 	}
-	ResponseOK(c, data)
+	ResponseSuccess(c, data)
 }
 
 // GetUserInfo
@@ -169,5 +169,5 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 		return
 	}
 
-	ResponseOK(c, data)
+	ResponseSuccess(c, data)
 }
