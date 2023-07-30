@@ -1,6 +1,8 @@
 package router
 
 import (
+	"fmt"
+
 	"go-sample/controller"
 	_ "go-sample/docs"
 	"go-sample/middlewares"
@@ -14,6 +16,11 @@ func Router() *gin.Engine {
 	r := gin.Default()
 	r.Use(middlewares.Cors())
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	r.NoRoute(func(c *gin.Context) {
+		msg := fmt.Sprintf("not found: %s %s", c.Request.Method, c.Request.RequestURI)
+		controller.ResponseErrorWithMsg(c, controller.NotFound, msg)
+	})
 
 	api := r.Group("/api")
 	v1 := api.Group("/v1")
