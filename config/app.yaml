@@ -1,0 +1,26 @@
+
+server:
+  name: "go-sample"
+  mode: "debug"
+  port: 8081
+  version: "v0.0.1"
+log:
+  level: "debug"
+  filename: "go-sample.log"
+  max_size: 200
+  max_age: 30
+  max_backups: 7
+mysql:
+  host: "127.0.0.1"
+  port: 13306
+  user: "root"
+  password: "root"
+  dbname: "go-sample"
+  max_open_conns: 200
+  max_idle_conns: 50
+redis:
+  host: "127.0.0.1"
+  port: 16379
+  password: ""
+  db: 0
+  pool_size: 100
