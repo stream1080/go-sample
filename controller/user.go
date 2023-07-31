@@ -104,9 +104,11 @@ func (u *UserApi) Register(c *gin.Context) {
 		return
 	}
 
-	ResponseSuccess(c, map[string]interface{}{
+	data := map[string]string{
 		"token": token,
-	})
+	}
+
+	ResponseSuccess(c, data)
 }
 
 // Login
@@ -126,14 +128,16 @@ func (u *UserApi) Login(c *gin.Context) {
 	}
 	// password = ulits.Md5(password)
 
-	err := models.DB.Where("username = ? and password = ?", username, password).First(&user).Error
-	if err != nil {
+	if err := models.DB.Where("username = ? and password = ?", username, password).First(&user).Error; err != nil {
+
 		if err == gorm.ErrRecordNotFound {
 			ResponseError(c, InvalidArgs)
 			return
 		}
-		ResponseError(c, ServerError)
+
 		log.Printf("Models err: %s", err)
+		ResponseError(c, ServerError)
+
 		return
 	}
 
@@ -143,9 +147,11 @@ func (u *UserApi) Login(c *gin.Context) {
 		log.Printf("GetToken err: %s", err)
 		return
 	}
+
 	data := map[string]string{
 		"token": token,
 	}
+
 	ResponseSuccess(c, data)
 }
 
