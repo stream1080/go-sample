@@ -6,6 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Result struct {
+	Code Code        `json:"code"`
+	Msg  interface{} `json:"msg"`
+	Data interface{} `json:"data"`
+}
+
 func ResponseSuccess(c *gin.Context, data interface{}) {
 	Response(c, SUCCESS, SUCCESS.Msg(), data)
 }
@@ -25,9 +31,9 @@ func Response(c *gin.Context, code Code, msg interface{}, data interface{}) {
 		httpCode = int(code)
 	}
 
-	c.JSON(httpCode, gin.H{
-		"code": code,
-		"msg:": msg,
-		"data": data,
+	c.JSON(httpCode, &Result{
+		Code: code,
+		Msg:  msg,
+		Data: data,
 	})
 }
