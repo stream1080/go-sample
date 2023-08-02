@@ -1,6 +1,11 @@
 package main
 
-import "go-sample/router"
+import (
+	"fmt"
+
+	"go-sample/config"
+	"go-sample/router"
+)
 
 // @title Swagger Example API
 // @version 1.0
@@ -17,7 +22,11 @@ import "go-sample/router"
 // @host 127.0.0.1:8080
 // @BasePath /api/v1
 func main() {
-	r := router.Router()
 
-	r.Run(":8080")
+	// 初始化配置
+	config.Init()
+
+	r := router.Init()
+
+	r.Run(fmt.Sprintf(":%d", config.Conf.ServerConfig.Port))
 }

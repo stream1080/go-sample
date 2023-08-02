@@ -12,9 +12,12 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func Router() *gin.Engine {
+func Init() *gin.Engine {
+
 	r := gin.Default()
+
 	r.Use(middlewares.Cors())
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	r.NoRoute(func(c *gin.Context) {
