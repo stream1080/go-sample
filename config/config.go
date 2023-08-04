@@ -17,7 +17,7 @@ type Config struct {
 
 type ServerConfig struct {
 	Mode string `yaml:"mode"`
-	Port string `yaml:"port"`
+	Port int    `yaml:"port"`
 }
 
 type MySQLConfig struct {
@@ -48,14 +48,13 @@ type LogConfig struct {
 	MaxBackups int    `yaml:"max_backups"`
 }
 
-func InitConfig() {
-	confData, err := os.ReadFile("./app.yaml")
+func Init() {
+	confData, err := os.ReadFile("./config/app.yaml")
 	if err != nil {
 		panic(err)
 	}
 
-	err = yaml.Unmarshal(confData, Conf)
-	if err != nil {
+	if err := yaml.Unmarshal(confData, Conf); err != nil {
 		panic(err)
 	}
 
