@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"go-sample/config"
+	"go-sample/global"
 	"go-sample/router"
 )
 
@@ -24,9 +24,9 @@ import (
 func main() {
 
 	// 初始化配置
-	config.Init()
+	global.InitConfig()
 
 	r := router.Init()
 
-	r.Run(fmt.Sprintf(":%d", config.Conf.ServerConfig.Port))
+	r.Run(fmt.Sprintf(":%d", global.Conf.ServerConfig.Port))
 }

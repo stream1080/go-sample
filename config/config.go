@@ -1,13 +1,5 @@
 package config
 
-import (
-	"os"
-
-	"gopkg.in/yaml.v2"
-)
-
-var Conf = new(Config)
-
 type Config struct {
 	*ServerConfig `yaml:"server"`
 	*MySQLConfig  `yaml:"mysql"`
@@ -46,19 +38,4 @@ type LogConfig struct {
 	MaxSize    int    `yaml:"max_size"`
 	MaxAge     int    `yaml:"max_age"`
 	MaxBackups int    `yaml:"max_backups"`
-}
-
-func Init() {
-	confData, err := os.ReadFile("./config/app.yaml")
-	if err != nil {
-		panic(err)
-	}
-
-	if err := yaml.Unmarshal(confData, Conf); err != nil {
-		panic(err)
-	}
-
-	if Conf.ServerConfig.Mode == "" {
-		Conf.ServerConfig.Mode = "debug"
-	}
 }
