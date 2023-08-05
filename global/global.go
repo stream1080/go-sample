@@ -8,6 +8,7 @@ import (
 	"go-sample/config"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis"
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -16,6 +17,7 @@ import (
 var (
 	Conf *config.Config
 	DB   *gorm.DB
+	RDB  *redis.Client
 )
 
 func InitConfig() {
@@ -33,8 +35,8 @@ func InitConfig() {
 	}
 }
 
-func InitMySQL() *gorm.DB {
-
+func InitMySQL() {
+	var err error
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		Conf.MySQLConfig.User,
 		Conf.MySQLConfig.Password,
@@ -42,9 +44,24 @@ func InitMySQL() *gorm.DB {
 		Conf.MySQLConfig.Port,
 		Conf.MySQLConfig.DB)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Println("gorm Init Error : ", err)
 	}
-	return db
+}
+
+func InitRedis() {
+
+	RDB = redis.NewClient(&redis.Options{
+		Addr:         fmt.Sprintf("%s:%d", Conf.RedisConfig.Host, Conf.RedisConfig.Port),
+		Password:     Conf.RedisConfig.Password,
+		DB:           Conf.RedisConfig.DB,
+		PoolSize:     Conf.RedisConfig.PoolSize,
+		MinIdleConns: Conf.RedisConfig.MinIdleConns,
+	})
+
+	_, err := RDB.Ping().Result()
+	if err != nil {
+		log.Println("redis Init Error : ", err)
+	}
 }

@@ -28,6 +28,8 @@ func main() {
 
 	global.InitMySQL()
 
+	global.InitRedis()
+
 	r := router.Init()
 
 	r.Run(fmt.Sprintf(":%d", global.Conf.ServerConfig.Port))

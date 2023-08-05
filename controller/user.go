@@ -29,7 +29,7 @@ func (u *UserApi) SendCode(c *gin.Context) {
 		return
 	}
 	code := ulits.GetCode()
-	_, err := models.Redis.Set(email, code, 5*60*time.Minute).Result()
+	_, err := global.RDB.Set(email, code, 5*60*time.Minute).Result()
 	if err != nil {
 		log.Printf("Set Code Error:%v \n", err)
 		ResponseError(c, ServerError)
@@ -62,7 +62,7 @@ func (u *UserApi) Register(c *gin.Context) {
 		return
 	}
 	// 验证验证码是否正确
-	verificationCode, err := models.Redis.Get(mobile).Result()
+	verificationCode, err := global.RDB.Get(mobile).Result()
 	if err != nil {
 		log.Printf("Get Code Error:%v \n", err)
 		ResponseError(c, CodeExpire)
