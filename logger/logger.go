@@ -1,8 +1,6 @@
 package logger
 
 import (
-	"time"
-
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -19,6 +17,7 @@ func Init() {
 		OutputPaths:       []string{"stdout"},
 		ErrorOutputPaths:  []string{"stderr"},
 	}
+
 	lg, err := zc.Build()
 	if err != nil {
 		panic(err)
@@ -39,7 +38,7 @@ func newEncoder() zapcore.EncoderConfig {
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
 		EncodeLevel:    zapcore.LowercaseLevelEncoder,
-		EncodeTime:     zapcore.TimeEncoderOfLayout(time.DateTime),
+		EncodeTime:     zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05"),
 		EncodeDuration: zapcore.StringDurationEncoder,
 		EncodeCaller:   zapcore.ShortCallerEncoder,
 		EncodeName:     zapcore.FullNameEncoder,
