@@ -1,9 +1,7 @@
 
 server:
-  name: go-sample
   mode: debug
   port: 8081
-  version: v0.0.1
 log:
   level: debug
   filename: go-sample.log

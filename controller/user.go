@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"go-sample/global"
 	"go-sample/models"
 	"go-sample/pkg/ulits"
 
@@ -73,7 +74,7 @@ func (u *UserApi) Register(c *gin.Context) {
 	}
 	// 判断邮箱是否已存在
 	var cnt int64
-	err = models.DB.Where("mobile = ?", mobile).Model(new(models.User)).Count(&cnt).Error
+	err = global.DB.Where("mobile = ?", mobile).Model(new(models.User)).Count(&cnt).Error
 	if err != nil {
 		ResponseError(c, ServerError)
 		return
@@ -91,7 +92,7 @@ func (u *UserApi) Register(c *gin.Context) {
 		Password: ulits.GetMd5(password),
 		Mobile:   mobile,
 	}
-	err = models.DB.Create(user).Error
+	err = global.DB.Create(user).Error
 	if err != nil {
 		ResponseError(c, ServerError)
 		return
@@ -128,7 +129,7 @@ func (u *UserApi) Login(c *gin.Context) {
 	}
 	// password = ulits.Md5(password)
 
-	if err := models.DB.Where("username = ? and password = ?", username, password).First(&user).Error; err != nil {
+	if err := global.DB.Where("username = ? and password = ?", username, password).First(&user).Error; err != nil {
 
 		if err == gorm.ErrRecordNotFound {
 			ResponseError(c, InvalidArgs)
@@ -169,7 +170,7 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 		return
 	}
 	data := new(models.User)
-	err := models.DB.Where("id = ?", id).Find(&data).Error
+	err := global.DB.Where("id = ?", id).Find(&data).Error
 	if err != nil {
 		ResponseError(c, InvalidArgs)
 		return
