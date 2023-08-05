@@ -26,6 +26,8 @@ func main() {
 	// 初始化配置
 	global.InitConfig()
 
+	global.InitMySQL()
+
 	r := router.Init()
 
 	r.Run(fmt.Sprintf(":%d", global.Conf.ServerConfig.Port))
