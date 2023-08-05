@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
+	"go.uber.org/zap"
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -33,6 +34,15 @@ func InitConfig() {
 	if Conf.ServerConfig.Mode == "" {
 		Conf.ServerConfig.Mode = gin.DebugMode
 	}
+}
+
+func InitLogger() {
+	lg, err := zap.NewDevelopment()
+	if err != nil {
+		log.Panic(err)
+	}
+	zap.ReplaceGlobals(lg)
+	zap.S().Info("init logger successful!")
 }
 
 func InitMySQL() {

@@ -26,6 +26,8 @@ func main() {
 	// 初始化配置
 	global.InitConfig()
 
+	global.InitLogger()
+
 	global.InitMySQL()
 
 	global.InitRedis()
