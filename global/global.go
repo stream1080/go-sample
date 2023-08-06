@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -37,12 +38,42 @@ func InitConfig() {
 }
 
 func InitLogger() {
-	lg, err := zap.NewDevelopment()
-	if err != nil {
-		log.Panic(err)
+	zc := zap.Config{
+		Level:             zap.NewAtomicLevelAt(zapcore.DebugLevel),
+		Development:       true,
+		DisableCaller:     false,
+		DisableStacktrace: true,
+		Sampling:          nil,
+		Encoding:          "json",
+		EncoderConfig:     getEncoder(),
+		OutputPaths:       []string{"stdout"},
+		ErrorOutputPaths:  []string{"stderr"},
 	}
+	lg, err := zc.Build()
+	if err != nil {
+		panic(err)
+	}
+
 	zap.ReplaceGlobals(lg)
+
 	zap.S().Info("init logger successful!")
+}
+
+func getEncoder() zapcore.EncoderConfig {
+	return zapcore.EncoderConfig{
+		MessageKey:     "msg",
+		LevelKey:       "level",
+		TimeKey:        "time",
+		NameKey:        "name",
+		CallerKey:      "caller",
+		StacktraceKey:  "stacktrace",
+		LineEnding:     zapcore.DefaultLineEnding,
+		EncodeLevel:    zapcore.LowercaseLevelEncoder,
+		EncodeTime:     zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05"),
+		EncodeDuration: zapcore.StringDurationEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
+		EncodeName:     zapcore.FullNameEncoder,
+	}
 }
 
 func InitMySQL() {
