@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AuthLogin 登录校验中间件
-func AuthLogin() gin.HandlerFunc {
+// Auth 登录校验中间件
+func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.GetHeader("Authorization")
 		user, err := ulits.AnalyseToken(auth)
