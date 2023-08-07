@@ -22,6 +22,13 @@ var (
 	RDB  *redis.Client
 )
 
+func Init() {
+	InitConfig()
+	InitLogger()
+	InitMySQL()
+	InitRedis()
+}
+
 func InitConfig() {
 	data, err := os.ReadFile("./app.yaml")
 	if err != nil {
@@ -56,7 +63,7 @@ func InitLogger() {
 
 	zap.ReplaceGlobals(lg)
 
-	zap.S().Info("init logger successful!")
+	zap.S().Info("logger init successful!")
 }
 
 func getEncoder() zapcore.EncoderConfig {
@@ -87,7 +94,7 @@ func InitMySQL() {
 
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Println("gorm Init Error : ", err)
+		log.Println("gorm Init Error: ", err)
 	}
 }
 
@@ -103,6 +110,6 @@ func InitRedis() {
 
 	_, err := RDB.Ping().Result()
 	if err != nil {
-		log.Println("redis Init Error : ", err)
+		log.Println("redis Init Error: ", err)
 	}
 }
