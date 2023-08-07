@@ -23,7 +23,7 @@ var (
 )
 
 func InitConfig() {
-	data, err := os.ReadFile("./config/app.yaml")
+	data, err := os.ReadFile("./app.yaml")
 	if err != nil {
 		panic(err)
 	}
