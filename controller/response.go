@@ -31,9 +31,5 @@ func Response(c *gin.Context, code Code, msg interface{}, data interface{}) {
 		httpCode = int(code)
 	}
 
-	c.JSON(httpCode, &Result{
-		Code: code,
-		Msg:  msg,
-		Data: data,
-	})
+	c.JSON(httpCode, &Result{code, msg, data})
 }
