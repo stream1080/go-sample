@@ -1,7 +1,7 @@
 
 server:
   mode: debug
-  port: 8081
+  port: 8080
 log:
   level: debug
   filename: go-sample.log
@@ -10,7 +10,7 @@ log:
   max_backups: 7
 mysql:
   host: 127.0.0.1
-  port: 13306
+  port: 3306
   user: root
   password: root
   dbname: go-sample
@@ -18,7 +18,7 @@ mysql:
   max_idle_conns: 50
 redis:
   host: 127.0.0.1
-  port: 16379
+  port: 6379
   password: 
   db: 0
   pool_size: 100

@@ -2,7 +2,6 @@ package global
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"go-sample/config"
@@ -94,7 +93,7 @@ func InitMySQL() {
 
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Println("gorm Init Error: ", err)
+		zap.S().Error("gorm init error: ", err)
 	}
 }
 
@@ -110,6 +109,6 @@ func InitRedis() {
 
 	_, err := RDB.Ping().Result()
 	if err != nil {
-		log.Println("redis Init Error: ", err)
+		zap.S().Error("redis init error: ", err)
 	}
 }
