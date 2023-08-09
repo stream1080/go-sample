@@ -6,6 +6,7 @@ import (
 
 	"go-sample/global"
 	"go-sample/models"
+	"go-sample/pkg/encrypt"
 	"go-sample/pkg/ulits"
 
 	"github.com/gin-gonic/gin"
@@ -89,7 +90,7 @@ func (u *UserApi) Register(c *gin.Context) {
 	user := &models.User{
 		UUID:     uuid,
 		UserName: username,
-		Password: ulits.GetMd5(password),
+		Password: encrypt.GetMd5(password),
 		Mobile:   mobile,
 	}
 	err = global.DB.Create(user).Error

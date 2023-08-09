@@ -1,9 +1,7 @@
 package ulits
 
 import (
-	"crypto/md5"
 	"crypto/tls"
-	"fmt"
 	"math/rand"
 	"net/smtp"
 	"strconv"
@@ -19,11 +17,6 @@ type UserInfo struct {
 	UserName string `json:"username"`
 	Role     int    `json:"role"`
 	jwt.StandardClaims
-}
-
-// GetMd5 生成 md5
-func GetMd5(s string) string {
-	return fmt.Sprintf("%x", md5.Sum([]byte(s)))
 }
 
 // GetUUID 生成唯一码
