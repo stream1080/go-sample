@@ -7,6 +7,7 @@ import (
 	"go-sample/global"
 	"go-sample/models"
 	"go-sample/pkg/encrypt"
+	"go-sample/pkg/jwt"
 	"go-sample/pkg/ulits"
 
 	"github.com/gin-gonic/gin"
@@ -100,7 +101,7 @@ func (u *UserApi) Register(c *gin.Context) {
 	}
 
 	// 生成 token
-	token, err := ulits.GetToken(user.UUID, user.UserName, user.Role)
+	token, err := jwt.NewToken(user.UUID, user.UserName, user.Role)
 	if err != nil {
 		ResponseError(c, ServerError)
 		return
@@ -143,7 +144,7 @@ func (u *UserApi) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := ulits.GetToken(user.UUID, user.UserName, user.Role)
+	token, err := jwt.NewToken(user.UUID, user.UserName, user.Role)
 	if err != nil {
 		ResponseError(c, Unauthorized)
 		log.Printf("GetToken err: %s", err)
