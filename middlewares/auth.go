@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"go-sample/controller"
-	"go-sample/pkg/ulits"
+	"go-sample/pkg/jwt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +11,7 @@ import (
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.GetHeader("Authorization")
-		user, err := ulits.AnalyseToken(auth)
+		user, err := jwt.AnalyseToken(auth)
 		if err != nil || user == nil {
 			c.Abort()
 			controller.ResponseError(c, controller.Unauthorized)
