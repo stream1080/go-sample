@@ -1,4 +1,4 @@
-package controller
+package response
 
 import (
 	"net/http"
@@ -12,15 +12,15 @@ type Result struct {
 	Data interface{} `json:"data"`
 }
 
-func ResponseSuccess(c *gin.Context, data interface{}) {
+func Success(c *gin.Context, data interface{}) {
 	Response(c, SUCCESS, SUCCESS.Msg(), data)
 }
 
-func ResponseError(c *gin.Context, code Code) {
+func Error(c *gin.Context, code Code) {
 	Response(c, code, code.Msg(), nil)
 }
 
-func ResponseErrorWithMsg(c *gin.Context, code Code, msg interface{}) {
+func WithMsg(c *gin.Context, code Code, msg interface{}) {
 	Response(c, code, msg, nil)
 }
 

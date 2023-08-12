@@ -1,9 +1,10 @@
 package middlewares
 
 import (
-	"go-sample/controller"
-	"go-sample/pkg/jwt"
 	"strings"
+
+	"go-sample/pkg/jwt"
+	"go-sample/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,14 +22,14 @@ func Auth() gin.HandlerFunc {
 		auth := c.GetHeader(AuthHeader)
 		parts := strings.SplitN(auth, " ", 2)
 		if !(len(parts) == 2 && parts[0] == Bearer) {
-			controller.ResponseError(c, controller.Unauthorized)
+			response.Error(c, response.Unauthorized)
 			c.Abort()
 			return
 		}
 
 		user, err := jwt.AnalyseToken(parts[1])
 		if err != nil {
-			controller.ResponseError(c, controller.Unauthorized)
+			response.Error(c, response.Unauthorized)
 			c.Abort()
 			return
 		}

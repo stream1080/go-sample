@@ -6,6 +6,7 @@ import (
 	"go-sample/controller"
 	_ "go-sample/docs"
 	"go-sample/middlewares"
+	"go-sample/pkg/response"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -22,7 +23,7 @@ func Init() *gin.Engine {
 
 	r.NoRoute(func(c *gin.Context) {
 		msg := fmt.Sprintf("not found: %s %s", c.Request.Method, c.Request.RequestURI)
-		controller.ResponseErrorWithMsg(c, controller.NotFound, msg)
+		response.WithMsg(c, response.NotFound, msg)
 	})
 
 	api := r.Group("/api")
