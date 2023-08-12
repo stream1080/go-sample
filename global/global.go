@@ -29,7 +29,7 @@ func Init() {
 }
 
 func InitConfig() {
-	data, err := os.ReadFile("./app.yaml")
+	data, err := os.ReadFile("./app.yml")
 	if err != nil {
 		zap.S().Panic(err)
 	}
