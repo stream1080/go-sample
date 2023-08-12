@@ -15,9 +15,9 @@ import (
 
 func Init() *gin.Engine {
 
-	r := gin.Default()
+	r := gin.New()
 
-	r.Use(middlewares.Cors())
+	r.Use(middlewares.Cors(), middlewares.Logger(), middlewares.Logger())
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 

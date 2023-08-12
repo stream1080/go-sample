@@ -31,11 +31,11 @@ func Init() {
 func InitConfig() {
 	data, err := os.ReadFile("./app.yaml")
 	if err != nil {
-		panic(err)
+		zap.S().Panic(err)
 	}
 
 	if err := yaml.Unmarshal(data, &Conf); err != nil {
-		panic(err)
+		zap.S().Panic(err)
 	}
 
 	if Conf.ServerConfig.Mode == "" {
