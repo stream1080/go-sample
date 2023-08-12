@@ -17,7 +17,7 @@ func Init() *gin.Engine {
 
 	r := gin.New()
 
-	r.Use(middlewares.Cors(), middlewares.Logger(), middlewares.Logger())
+	r.Use(middlewares.Cors(), middlewares.Logger(), middlewares.Recovery(true))
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
