@@ -8,6 +8,7 @@ import (
 	"go-sample/models"
 	"go-sample/pkg/encrypt"
 	"go-sample/pkg/jwt"
+	"go-sample/pkg/response"
 	"go-sample/pkg/ulits"
 
 	"github.com/gin-gonic/gin"
@@ -27,20 +28,20 @@ func (u *UserApi) SendCode(c *gin.Context) {
 
 	email := c.PostForm("email")
 	if email == "" {
-		ResponseError(c, InvalidArgs)
+		response.Error(c, response.InvalidArgs)
 		return
 	}
 	code := ulits.GetCode()
 	_, err := global.RDB.Set(email, code, 5*60*time.Minute).Result()
 	if err != nil {
 		log.Printf("Set Code Error:%v \n", err)
-		ResponseError(c, ServerError)
+		response.Error(c, response.ServerError)
 		return
 	}
 	content := []byte("您的验证码为：" + code + ", 5分钟内有效，请及时操作。")
 	ulits.SendMail(email, content)
 
-	ResponseSuccess(c, nil)
+	response.Success(c, nil)
 }
 
 // Register
@@ -60,29 +61,29 @@ func (u *UserApi) Register(c *gin.Context) {
 		code     = c.PostForm("code")
 	)
 	if code == "" || username == "" || password == "" {
-		ResponseError(c, InvalidArgs)
+		response.Error(c, response.InvalidArgs)
 		return
 	}
 	// 验证验证码是否正确
 	verificationCode, err := global.RDB.Get(mobile).Result()
 	if err != nil {
 		log.Printf("Get Code Error:%v \n", err)
-		ResponseError(c, CodeExpire)
+		response.Error(c, response.CodeExpire)
 		return
 	}
 	if verificationCode != code {
-		ResponseError(c, CodeError)
+		response.Error(c, response.CodeError)
 		return
 	}
 	// 判断邮箱是否已存在
 	var cnt int64
 	err = global.DB.Where("mobile = ?", mobile).Model(new(models.User)).Count(&cnt).Error
 	if err != nil {
-		ResponseError(c, ServerError)
+		response.Error(c, response.ServerError)
 		return
 	}
 	if cnt > 0 {
-		ResponseError(c, UserExist)
+		response.Error(c, response.UserExist)
 		return
 	}
 
@@ -96,14 +97,14 @@ func (u *UserApi) Register(c *gin.Context) {
 	}
 	err = global.DB.Create(user).Error
 	if err != nil {
-		ResponseError(c, ServerError)
+		response.Error(c, response.ServerError)
 		return
 	}
 
 	// 生成 token
 	token, err := jwt.NewToken(user.UUID, user.UserName, user.Role)
 	if err != nil {
-		ResponseError(c, ServerError)
+		response.Error(c, response.ServerError)
 		return
 	}
 
@@ -111,7 +112,7 @@ func (u *UserApi) Register(c *gin.Context) {
 		"token": token,
 	}
 
-	ResponseSuccess(c, data)
+	response.Success(c, data)
 }
 
 // Login
@@ -126,7 +127,7 @@ func (u *UserApi) Login(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 	if username == "" || password == "" {
-		ResponseError(c, InvalidArgs)
+		response.Error(c, response.InvalidArgs)
 		return
 	}
 	// password = ulits.Md5(password)
@@ -134,19 +135,19 @@ func (u *UserApi) Login(c *gin.Context) {
 	if err := global.DB.Where("username = ? and password = ?", username, password).First(&user).Error; err != nil {
 
 		if err == gorm.ErrRecordNotFound {
-			ResponseError(c, InvalidArgs)
+			response.Error(c, response.InvalidArgs)
 			return
 		}
 
 		log.Printf("Models err: %s", err)
-		ResponseError(c, ServerError)
+		response.Error(c, response.ServerError)
 
 		return
 	}
 
 	token, err := jwt.NewToken(user.UUID, user.UserName, user.Role)
 	if err != nil {
-		ResponseError(c, Unauthorized)
+		response.Error(c, response.Unauthorized)
 		log.Printf("GetToken err: %s", err)
 		return
 	}
@@ -155,7 +156,7 @@ func (u *UserApi) Login(c *gin.Context) {
 		"token": token,
 	}
 
-	ResponseSuccess(c, data)
+	response.Success(c, data)
 }
 
 // GetUserInfo
@@ -168,15 +169,15 @@ func (u *UserApi) Login(c *gin.Context) {
 func (u *UserApi) GetUserInfo(c *gin.Context) {
 	id := c.Query("id")
 	if id == "" {
-		ResponseError(c, InvalidArgs)
+		response.Error(c, response.InvalidArgs)
 		return
 	}
 	data := new(models.User)
 	err := global.DB.Where("id = ?", id).Find(&data).Error
 	if err != nil {
-		ResponseError(c, InvalidArgs)
+		response.Error(c, response.InvalidArgs)
 		return
 	}
 
-	ResponseSuccess(c, data)
+	response.Success(c, data)
 }
