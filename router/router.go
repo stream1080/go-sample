@@ -36,7 +36,7 @@ func Init() *gin.Engine {
 	v1.POST("/send/code", userApi.SendCode)
 
 	authLogin := v1.Group("/user", middlewares.Auth())
-	authLogin.GET("/info", userApi.GetUserInfo)
+	authLogin.GET("/info", userApi.UserInfo)
 
 	return r
 }
