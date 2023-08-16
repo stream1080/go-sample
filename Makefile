@@ -2,20 +2,22 @@
 
 PROJECT=go-sample
 
-all: tool build test clean
+all: dev
 
 dev: 
 	go run main.go
+
+fmt:
+	gofmt -w .
+
+vet:
+	go vet ./...
 
 build: 
 	go build -o ${PROJECT}
 
 test:
 	go test ./...
-
-tool:
-	go vet ./...; true
-	gofmt -w .
 
 clean:
 	rm -rf ${PROJECT}
