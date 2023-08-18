@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+
+  redis-sample:
+    image: redis:5.0.7
+    container_name: redis-sample
+    restart: always
+    ports:
+      - '6379:6379'
+
+  mysql-sample:
+    image: mysql:8.0.19
+    container_name: mysql-sample
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: demo
+      MYSQL_ROOT_PASSWORD: "123456"
+
+  go-sample:
+    container_name: go-sample
+    restart: always
+    build: .
+    depends_on:
+      - mysql-sample
+      - redis-sample
+    ports:
+      - '8080:8080'
