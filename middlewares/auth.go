@@ -27,7 +27,7 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 
-		user, err := jwt.AnalyseToken(parts[1])
+		user, err := jwt.AnalyseToken(parts[1], "")
 		if err != nil {
 			response.Error(c, response.Unauthorized)
 			c.Abort()
