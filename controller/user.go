@@ -92,7 +92,7 @@ func (u *UserApi) Register(c *gin.Context) {
 	user := &models.User{
 		UUID:     uuid,
 		UserName: username,
-		Password: encrypt.GetMd5(password),
+		Password: encrypt.Md5(password),
 		Mobile:   mobile,
 	}
 	err = global.DB.Create(user).Error
@@ -102,7 +102,8 @@ func (u *UserApi) Register(c *gin.Context) {
 	}
 
 	// 生成 token
-	token, err := jwt.NewToken(user.UUID, user.UserName, user.Role)
+	userClaims := jwt.NewClaims(user.UUID, user.UserName, user.Role)
+	token, err := jwt.NewToken(userClaims, "")
 	if err != nil {
 		response.Error(c, response.ServerError)
 		return
@@ -145,7 +146,8 @@ func (u *UserApi) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := jwt.NewToken(user.UUID, user.UserName, user.Role)
+	userClaims := jwt.NewClaims(user.UUID, user.UserName, user.Role)
+	token, err := jwt.NewToken(userClaims, "")
 	if err != nil {
 		response.Error(c, response.Unauthorized)
 		log.Printf("GetToken err: %s", err)
