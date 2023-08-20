@@ -1,11 +1,21 @@
 package encrypt
 
-import (
-	"crypto/md5"
-	"fmt"
-)
+import "golang.org/x/crypto/bcrypt"
 
-// GetMd5 生成 md5
-func GetMd5(s string) string {
-	return fmt.Sprintf("%x", md5.Sum([]byte(s)))
+func EncryptPassword(src string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(src), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hash), nil
+}
+
+// ValidPassword use golang.org/x/crypto/bcrypt compare passwords for equality
+func ValidPassword(plaintext, ciphertext string) bool {
+	if len(ciphertext) <= 0 {
+		return false
+	}
+	err := bcrypt.CompareHashAndPassword([]byte(ciphertext), []byte(plaintext))
+
+	return err == nil
 }
