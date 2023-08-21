@@ -6,6 +6,7 @@ ADD . .
 
 RUN GOPROXY=https://goproxy.cn,direct go mod download && go build -o app
 
+
 FROM alpine as release
 
 WORKDIR app
