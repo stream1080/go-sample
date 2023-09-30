@@ -62,9 +62,5 @@ func (m *NodeMap) PickNode(key string) string {
 	})
 
 	// Means we have cycled back to the first replica.
-	if idx == len(m.nodeHashs) {
-		idx = 0
-	}
-
-	return m.nodeHashMap[m.nodeHashs[idx]]
+	return m.nodeHashMap[m.nodeHashs[idx%len(m.nodeHashs)]]
 }
