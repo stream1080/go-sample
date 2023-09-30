@@ -47,3 +47,24 @@ func (m *NodeMap) AddNode(keys ...string) {
 
 	sort.Ints(m.nodeHashs)
 }
+
+// PickNode gets the closest item in the hash to the provided key.
+func (m *NodeMap) PickNode(key string) string {
+	if m.IsEmpty() {
+		return ""
+	}
+
+	hash := int(m.hashFunc([]byte(key)))
+
+	// Binary search for appropriate replica.
+	idx := sort.Search(len(m.nodeHashs), func(i int) bool {
+		return m.nodeHashs[i] >= hash
+	})
+
+	// Means we have cycled back to the first replica.
+	if idx == len(m.nodeHashs) {
+		idx = 0
+	}
+
+	return m.nodeHashMap[m.nodeHashs[idx]]
+}
