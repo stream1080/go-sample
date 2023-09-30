@@ -1,5 +1,7 @@
 package consistenthash
 
+import "hash/crc32"
+
 // HashFunc defines function to generate hash code
 type HashFunc func(data []byte) uint32
 
@@ -8,4 +10,17 @@ type NodeMap struct {
 	hashFunc    HashFunc       // hash func
 	nodeHashs   []int          // sorted
 	nodeHashMap map[int]string // node
+}
+
+// NewNodeMap creates a new NodeMap
+func NewNodeMap(fn HashFunc) *NodeMap {
+
+	if fn == nil {
+		fn = crc32.ChecksumIEEE
+	}
+
+	return &NodeMap{
+		hashFunc:    fn,
+		nodeHashMap: make(map[int]string),
+	}
 }
