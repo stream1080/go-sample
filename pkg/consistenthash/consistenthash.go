@@ -24,3 +24,8 @@ func NewNodeMap(fn HashFunc) *NodeMap {
 		nodeHashMap: make(map[int]string),
 	}
 }
+
+// IsEmpty returns if there is no node in NodeMap
+func (m *NodeMap) IsEmpty() bool {
+	return len(m.nodeHashs) == 0
+}
