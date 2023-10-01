@@ -12,7 +12,6 @@ func New() string {
 }
 
 func UUID16() string {
-	uuidStr := New()
-	uuidStr = strings.ReplaceAll(uuidStr, "-", "")
+	uuidStr := strings.ReplaceAll(New(), "-", "")
 	return uuidStr[0:16]
 }
