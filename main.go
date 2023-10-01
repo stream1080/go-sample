@@ -23,8 +23,13 @@ import (
 // @BasePath /api/v1
 func main() {
 
-	// 初始化
-	global.Init()
+	global.InitConfig()
+
+	global.InitLogger()
+
+	global.InitMySQL()
+
+	global.InitRedis()
 
 	r := router.Init()
 

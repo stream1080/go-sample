@@ -21,13 +21,6 @@ var (
 	RDB  *redis.Client
 )
 
-func Init() {
-	InitConfig()
-	InitLogger()
-	InitMySQL()
-	InitRedis()
-}
-
 func InitConfig() {
 	data, err := os.ReadFile("./app.yml")
 	if err != nil {
