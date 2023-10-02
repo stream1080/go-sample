@@ -2,15 +2,14 @@ package global
 
 import (
 	"fmt"
-	"os"
+	"log"
 
 	"go-sample/config"
 
-	"github.com/gin-gonic/gin"
+	"github.com/Netflix/go-env"
 	"github.com/go-redis/redis"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -22,17 +21,9 @@ var (
 )
 
 func InitConfig() {
-	data, err := os.ReadFile("./app.yml")
-	if err != nil {
-		zap.S().Panic(err)
-	}
 
-	if err := yaml.Unmarshal(data, &Conf); err != nil {
-		zap.S().Panic(err)
-	}
-
-	if Conf.ServerConfig.Mode == "" {
-		Conf.ServerConfig.Mode = gin.DebugMode
+	if _, err := env.UnmarshalFromEnviron(&Conf); err != nil {
+		log.Fatalln(err)
 	}
 }
 
@@ -50,7 +41,7 @@ func InitLogger() {
 	}
 	lg, err := zc.Build()
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 
 	zap.ReplaceGlobals(lg)
