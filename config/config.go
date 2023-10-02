@@ -12,13 +12,11 @@ type ServerConfig struct {
 }
 
 type MySQLConfig struct {
-	Host         string `yaml:"host"`
-	User         string `yaml:"user"`
-	Password     string `yaml:"password"`
-	DB           string `yaml:"dbname"`
-	Port         int    `yaml:"port"`
-	MaxOpenConns int    `yaml:"max_open_conns"`
-	MaxIdleConns int    `yaml:"max_idle_conns"`
+	Host     string `yaml:"host"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+	DB       string `yaml:"dbname"`
+	Port     int    `yaml:"port"`
 }
 
 type RedisConfig struct {
