@@ -4,7 +4,6 @@ type Config struct {
 	ServerConfig `yaml:"server"`
 	MySQLConfig  `yaml:"mysql"`
 	RedisConfig  `yaml:"redis"`
-	LogConfig    `yaml:"log"`
 }
 
 type ServerConfig struct {
@@ -30,12 +29,4 @@ type RedisConfig struct {
 	DB           int    `yaml:"db"`
 	PoolSize     int    `yaml:"pool_size"`
 	MinIdleConns int    `yaml:"min_idle_conns"`
-}
-
-type LogConfig struct {
-	Level      string `yaml:"level"`
-	Filename   string `yaml:"filename"`
-	MaxSize    int    `yaml:"max_size"`
-	MaxAge     int    `yaml:"max_age"`
-	MaxBackups int    `yaml:"max_backups"`
 }
