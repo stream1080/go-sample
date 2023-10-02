@@ -41,7 +41,7 @@ func InitLogger() {
 	}
 	lg, err := zc.Build()
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 
 	zap.ReplaceGlobals(lg)
