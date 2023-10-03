@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	Conf *config.Config
+	Conf config.Config
 	DB   *gorm.DB
 	RDB  *redis.Client
 )
@@ -23,7 +23,7 @@ var (
 func InitConfig() {
 
 	if _, err := env.UnmarshalFromEnviron(&Conf); err != nil {
-		log.Fatalln(err)
+		log.Fatalf("init config failed with %s\n", err)
 	}
 }
 
