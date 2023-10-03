@@ -12,6 +12,7 @@ import (
 	"go-sample/pkg/ulits"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -34,7 +35,7 @@ func (u *UserApi) SendCode(c *gin.Context) {
 	code := ulits.GetCode()
 	_, err := global.RDB.Set(email, code, 5*60*time.Minute).Result()
 	if err != nil {
-		log.Printf("Set Code Error:%v \n", err)
+		zap.S().Errorf("Set Code Error:%v \n", err)
 		response.Error(c, response.ServerError)
 		return
 	}
@@ -67,7 +68,7 @@ func (u *UserApi) Register(c *gin.Context) {
 	// 验证验证码是否正确
 	verificationCode, err := global.RDB.Get(mobile).Result()
 	if err != nil {
-		log.Printf("Get Code Error:%v \n", err)
+		zap.S().Errorf("Get Code Error:%v \n", err)
 		response.Error(c, response.CodeExpire)
 		return
 	}
@@ -140,7 +141,7 @@ func (u *UserApi) Login(c *gin.Context) {
 			return
 		}
 
-		log.Printf("Models err: %s", err)
+		zap.S().Errorf("Models err: %s", err)
 		response.Error(c, response.ServerError)
 
 		return
@@ -150,7 +151,7 @@ func (u *UserApi) Login(c *gin.Context) {
 	token, err := jwt.NewToken(userClaims, "")
 	if err != nil {
 		response.Error(c, response.Unauthorized)
-		log.Printf("GetToken err: %s", err)
+		zap.S().Errorf("GetToken err: %s", err)
 		return
 	}
 
