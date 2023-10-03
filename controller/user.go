@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"time"
 
 	"go-sample/global"
