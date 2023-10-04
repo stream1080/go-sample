@@ -18,28 +18,28 @@ import (
 type UserApi struct {
 }
 
-// SendCode
-// @Tags 公共方法
-// @Summary 发送邮件验证码
-// @Param email formData string true "email"
-// @Success 200 {string} json "{"code":"200","data":""}"
-// @Router /send/code [post]
+type EmailParam struct {
+	Email string `json:"email" binding:"required"`
+}
+
 func (u *UserApi) SendCode(c *gin.Context) {
 
-	email := c.PostForm("email")
-	if email == "" {
+	var param EmailParam
+	if err := c.ShouldBindJSON(&param); err != nil {
+		zap.S().Error("<UserApi.SendCode> c.ShouldBindJSON() failed with ", err)
 		response.Error(c, response.InvalidArgs)
 		return
 	}
+
 	code := ulits.GetCode()
-	_, err := global.RDB.Set(email, code, 5*60*time.Minute).Result()
+	_, err := global.RDB.Set(param.Email, code, 5*60*time.Minute).Result()
 	if err != nil {
 		zap.S().Errorf("Set Code Error:%v \n", err)
 		response.Error(c, response.ServerError)
 		return
 	}
-	content := []byte("您的验证码为：" + code + ", 5分钟内有效，请及时操作。")
-	ulits.SendMail(email, content)
+	content := []byte("您的验证码为：" + code + ", 5分钟内有效, 请及时操作。")
+	ulits.SendMail(param.Email, content)
 
 	response.Success(c, nil)
 }
