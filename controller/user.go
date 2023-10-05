@@ -44,40 +44,37 @@ func (u *UserApi) SendCode(c *gin.Context) {
 	response.Success(c, nil)
 }
 
-// Register
-// @Tags 用户管理
-// @Summary 用户注册
-// @Param code formData string true "code"
-// @Param username formData string true "username"
-// @Param password formData string true "password"
-// @Param mobile formData string false "mobile"
-// @Success 200 {string} json "{"code":"200","msg":"success","data":""}"
-// @Router /register [post]
+type RegisterForm struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Mobile   string `json:"mobile" binding:"required"`
+	SmsCode  string `json:"sms_code" binding:"required"`
+}
+
 func (u *UserApi) Register(c *gin.Context) {
-	var (
-		username = c.PostForm("username")
-		password = c.PostForm("password")
-		mobile   = c.PostForm("mobile")
-		code     = c.PostForm("code")
-	)
-	if code == "" || username == "" || password == "" {
+
+	var form RegisterForm
+	if err := c.ShouldBindJSON(&form); err != nil {
+		zap.S().Error("<UserApi.Register> c.ShouldBindJSON() failed with ", err)
 		response.Error(c, response.InvalidArgs)
 		return
 	}
+
 	// 验证验证码是否正确
-	verificationCode, err := global.RDB.Get(mobile).Result()
+	verificationCode, err := global.RDB.Get(form.Mobile).Result()
 	if err != nil {
 		zap.S().Errorf("Get Code Error:%v \n", err)
 		response.Error(c, response.CodeExpire)
 		return
 	}
-	if verificationCode != code {
+
+	if verificationCode != form.SmsCode {
 		response.Error(c, response.CodeError)
 		return
 	}
 	// 判断邮箱是否已存在
 	var cnt int64
-	err = global.DB.Where("mobile = ?", mobile).Model(new(models.User)).Count(&cnt).Error
+	err = global.DB.Where("mobile = ?", form.Mobile).Model(new(models.User)).Count(&cnt).Error
 	if err != nil {
 		response.Error(c, response.ServerError)
 		return
@@ -91,9 +88,9 @@ func (u *UserApi) Register(c *gin.Context) {
 	uuid := ulits.GetUUID()
 	user := &models.User{
 		UUID:     uuid,
-		UserName: username,
-		Password: encrypt.Md5(password),
-		Mobile:   mobile,
+		UserName: form.Username,
+		Password: encrypt.Md5(form.Password),
+		Mobile:   form.Mobile,
 	}
 	err = global.DB.Create(user).Error
 	if err != nil {
