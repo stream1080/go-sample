@@ -44,15 +44,6 @@ func (u *UserApi) SendCode(c *gin.Context) {
 	response.Success(c, nil)
 }
 
-// Register
-// @Tags 用户管理
-// @Summary 用户注册
-// @Param code formData string true "code"
-// @Param username formData string true "username"
-// @Param password formData string true "password"
-// @Param mobile formData string false "mobile"
-// @Success 200 {string} json "{"code":"200","msg":"success","data":""}"
-// @Router /register [post]
 func (u *UserApi) Register(c *gin.Context) {
 	var (
 		username = c.PostForm("username")
