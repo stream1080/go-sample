@@ -134,10 +134,8 @@ func (u *UserApi) Login(c *gin.Context) {
 			response.Error(c, response.InvalidArgs)
 			return
 		}
-
-		zap.S().Errorf("Models err: %s", err)
+		zap.S().Errorf("query user err: %s", err)
 		response.Error(c, response.ServerError)
-
 		return
 	}
 
