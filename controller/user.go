@@ -113,13 +113,6 @@ func (u *UserApi) Register(c *gin.Context) {
 	response.Success(c, data)
 }
 
-// Login
-// @Tags 用户管理
-// @Summary 用户登录
-// @Param username formData string false "username"
-// @Param password formData string false "password"
-// @Success 200 {string} json "{"code":"200","data":"","msg":"success"}"
-// @Router /login [post]
 func (u *UserApi) Login(c *gin.Context) {
 	user := new(models.User)
 	username := c.PostForm("username")
