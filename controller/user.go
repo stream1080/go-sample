@@ -113,33 +113,29 @@ func (u *UserApi) Register(c *gin.Context) {
 	response.Success(c, data)
 }
 
-// Login
-// @Tags 用户管理
-// @Summary 用户登录
-// @Param username formData string false "username"
-// @Param password formData string false "password"
-// @Success 200 {string} json "{"code":"200","data":"","msg":"success"}"
-// @Router /login [post]
+type LoginForm struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
 func (u *UserApi) Login(c *gin.Context) {
-	user := new(models.User)
-	username := c.PostForm("username")
-	password := c.PostForm("password")
-	if username == "" || password == "" {
+	var form LoginForm
+	if err := c.ShouldBindJSON(&form); err != nil {
+		zap.S().Error("<UserApi.Login> c.ShouldBindJSON() failed with ", err)
 		response.Error(c, response.InvalidArgs)
 		return
 	}
-	// password = ulits.Md5(password)
 
-	if err := global.DB.Where("username = ? and password = ?", username, password).First(&user).Error; err != nil {
-
+	form.Password = encrypt.Md5(form.Password)
+	user := new(models.User)
+	err := global.DB.Where("username = ? and password = ?", form.Username, form.Password).First(&user).Error
+	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			response.Error(c, response.InvalidArgs)
 			return
 		}
-
-		zap.S().Errorf("Models err: %s", err)
+		zap.S().Errorf("query user err: %s", err)
 		response.Error(c, response.ServerError)
-
 		return
 	}
 
