@@ -18,28 +18,28 @@ import (
 type UserApi struct {
 }
 
-type EmailParam struct {
+type EmailForm struct {
 	Email string `json:"email" binding:"required"`
 }
 
 func (u *UserApi) SendCode(c *gin.Context) {
 
-	var param EmailParam
-	if err := c.ShouldBindJSON(&param); err != nil {
+	var form EmailForm
+	if err := c.ShouldBindJSON(&form); err != nil {
 		zap.S().Error("<UserApi.SendCode> c.ShouldBindJSON() failed with ", err)
 		response.Error(c, response.InvalidArgs)
 		return
 	}
 
 	code := ulits.GetCode()
-	_, err := global.RDB.Set(param.Email, code, 5*60*time.Minute).Result()
+	_, err := global.RDB.Set(form.Email, code, 5*60*time.Minute).Result()
 	if err != nil {
 		zap.S().Errorf("Set Code Error:%v \n", err)
 		response.Error(c, response.ServerError)
 		return
 	}
 	content := []byte("您的验证码为：" + code + ", 5分钟内有效, 请及时操作。")
-	ulits.SendMail(param.Email, content)
+	ulits.SendMail(form.Email, content)
 
 	response.Success(c, nil)
 }
@@ -61,14 +61,14 @@ func (u *UserApi) Register(c *gin.Context) {
 	}
 
 	// 验证验证码是否正确
-	verificationCode, err := global.RDB.Get(form.Mobile).Result()
+	verifyCode, err := global.RDB.Get(form.Mobile).Result()
 	if err != nil {
 		zap.S().Errorf("Get Code Error:%v \n", err)
 		response.Error(c, response.CodeExpire)
 		return
 	}
 
-	if verificationCode != form.SmsCode {
+	if verifyCode != form.SmsCode {
 		response.Error(c, response.CodeError)
 		return
 	}
@@ -106,11 +106,7 @@ func (u *UserApi) Register(c *gin.Context) {
 		return
 	}
 
-	data := map[string]string{
-		"token": token,
-	}
-
-	response.Success(c, data)
+	response.Success(c, token)
 }
 
 type LoginForm struct {
@@ -127,7 +123,7 @@ func (u *UserApi) Login(c *gin.Context) {
 	}
 
 	form.Password = encrypt.Md5(form.Password)
-	user := new(models.User)
+	user := &models.User{}
 	err := global.DB.Where("username = ? and password = ?", form.Username, form.Password).First(&user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -147,11 +143,7 @@ func (u *UserApi) Login(c *gin.Context) {
 		return
 	}
 
-	data := map[string]string{
-		"token": token,
-	}
-
-	response.Success(c, data)
+	response.Success(c, token)
 }
 
 func (u *UserApi) UserInfo(c *gin.Context) {
