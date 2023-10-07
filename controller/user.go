@@ -154,25 +154,23 @@ func (u *UserApi) Login(c *gin.Context) {
 	response.Success(c, data)
 }
 
-// UserInfo
-// @Tags 用户管理
-// @Summary 用户详情
-// @Param authorization header string true "authorization"
-// @Param id query string false "id"
-// @Success 200 {string} json "{"code":"200","data":"","msg":"success"}"
-// @Router /user/info [get]
 func (u *UserApi) UserInfo(c *gin.Context) {
+
 	id := c.Query("id")
 	if id == "" {
-		response.Error(c, response.InvalidArgs)
-		return
-	}
-	data := new(models.User)
-	err := global.DB.Where("id = ?", id).Find(&data).Error
-	if err != nil {
+		zap.S().Error("<UserApi.UserInfo> nil userId")
 		response.Error(c, response.InvalidArgs)
 		return
 	}
 
-	response.Success(c, data)
+	user := &models.User{}
+	err := global.DB.Where("id = ?", id).Find(&user).Error
+	if err != nil {
+		zap.S().Error("<UserApi.UserInfo> query user failed with ", err)
+		response.Error(c, response.InvalidArgs)
+		return
+	}
+	user.Password = ""
+
+	response.Success(c, user)
 }
