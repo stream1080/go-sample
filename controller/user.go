@@ -154,13 +154,6 @@ func (u *UserApi) Login(c *gin.Context) {
 	response.Success(c, data)
 }
 
-// UserInfo
-// @Tags 用户管理
-// @Summary 用户详情
-// @Param authorization header string true "authorization"
-// @Param id query string false "id"
-// @Success 200 {string} json "{"code":"200","data":"","msg":"success"}"
-// @Router /user/info [get]
 func (u *UserApi) UserInfo(c *gin.Context) {
 	id := c.Query("id")
 	if id == "" {
