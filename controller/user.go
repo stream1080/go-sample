@@ -158,6 +158,7 @@ func (u *UserApi) UserInfo(c *gin.Context) {
 
 	id := c.Query("id")
 	if id == "" {
+		zap.S().Error("<UserApi.UserInfo> nil userId")
 		response.Error(c, response.InvalidArgs)
 		return
 	}
@@ -165,6 +166,7 @@ func (u *UserApi) UserInfo(c *gin.Context) {
 	user := &models.User{}
 	err := global.DB.Where("id = ?", id).Find(&user).Error
 	if err != nil {
+		zap.S().Error("<UserApi.UserInfo> query user failed with ", err)
 		response.Error(c, response.InvalidArgs)
 		return
 	}
