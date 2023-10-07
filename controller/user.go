@@ -155,17 +155,20 @@ func (u *UserApi) Login(c *gin.Context) {
 }
 
 func (u *UserApi) UserInfo(c *gin.Context) {
+
 	id := c.Query("id")
 	if id == "" {
 		response.Error(c, response.InvalidArgs)
 		return
 	}
-	data := new(models.User)
-	err := global.DB.Where("id = ?", id).Find(&data).Error
+
+	user := &models.User{}
+	err := global.DB.Where("id = ?", id).Find(&user).Error
 	if err != nil {
 		response.Error(c, response.InvalidArgs)
 		return
 	}
+	user.Password = ""
 
-	response.Success(c, data)
+	response.Success(c, user)
 }
