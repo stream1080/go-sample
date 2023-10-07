@@ -106,11 +106,7 @@ func (u *UserApi) Register(c *gin.Context) {
 		return
 	}
 
-	data := map[string]string{
-		"token": token,
-	}
-
-	response.Success(c, data)
+	response.Success(c, token)
 }
 
 type LoginForm struct {
@@ -127,7 +123,7 @@ func (u *UserApi) Login(c *gin.Context) {
 	}
 
 	form.Password = encrypt.Md5(form.Password)
-	user := new(models.User)
+	user := &models.User{}
 	err := global.DB.Where("username = ? and password = ?", form.Username, form.Password).First(&user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -147,11 +143,7 @@ func (u *UserApi) Login(c *gin.Context) {
 		return
 	}
 
-	data := map[string]string{
-		"token": token,
-	}
-
-	response.Success(c, data)
+	response.Success(c, token)
 }
 
 func (u *UserApi) UserInfo(c *gin.Context) {
