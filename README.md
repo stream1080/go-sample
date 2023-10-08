@@ -22,3 +22,22 @@
 - 应用统一封装响应格式，参照行业内主流项目规范；
 - 项目全局错误码封装；
 - 添加 `Makefile` 文件，可以使用 `make` 命令进行编译，打包。
+
+## 项目结构
+```
+├─config
+├─controller
+├─docs
+├─global
+├─middlewares
+├─models
+├─pkg
+│  ├─consistenthash
+│  ├─encrypt
+│  ├─jwt
+│  ├─lock
+│  ├─response
+│  ├─ulits
+│  └─uuid
+└─router
+```
