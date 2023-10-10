@@ -8,7 +8,7 @@ import (
 
 type Result struct {
 	Code Code        `json:"code"`
-	Msg  interface{} `json:"msg"`
+	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
 
@@ -20,11 +20,11 @@ func Error(c *gin.Context, code Code) {
 	Response(c, code, code.Msg(), nil)
 }
 
-func WithMsg(c *gin.Context, code Code, msg interface{}) {
+func WithMsg(c *gin.Context, code Code, msg string) {
 	Response(c, code, msg, nil)
 }
 
-func Response(c *gin.Context, code Code, msg interface{}, data interface{}) {
+func Response(c *gin.Context, code Code, msg string, data interface{}) {
 
 	httpCode := http.StatusOK
 	if code >= 100 && code < 599 {
