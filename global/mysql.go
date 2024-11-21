@@ -2,10 +2,12 @@ package global
 
 import (
 	"fmt"
+	"time"
 
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func InitMySQL() {
@@ -17,8 +19,19 @@ func InitMySQL() {
 		Conf.MySQLConfig.Port,
 		Conf.MySQLConfig.DB)
 
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
-		zap.S().Error("gorm init error: ", err)
+		zap.L().Panic("gorm init error: ", zap.Error(err))
 	}
+
+	sqlDB, err := DB.DB()
+	if err != nil {
+		zap.L().Panic("get sqlDB error", zap.Error(err))
+	}
+
+	sqlDB.SetMaxIdleConns(20)
+	sqlDB.SetMaxOpenConns(50)
+	sqlDB.SetConnMaxLifetime(time.Hour)
 }
