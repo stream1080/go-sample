@@ -17,8 +17,14 @@ var (
 )
 
 func InitConfig() {
-
 	if _, err := env.UnmarshalFromEnviron(&Conf); err != nil {
 		log.Panicf("init config failed with %s\n", err)
 	}
+}
+
+func Init() {
+	InitConfig()
+	InitLogger()
+	InitMySQL()
+	InitRedis()
 }

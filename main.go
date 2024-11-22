@@ -15,13 +15,7 @@ import (
 
 func main() {
 
-	global.InitConfig()
-
-	global.InitLogger()
-
-	global.InitMySQL()
-
-	global.InitRedis()
+	global.Init()
 
 	r := router.Init()
 
