@@ -1,4 +1,4 @@
-package ulits
+package utils
 
 // BytesEquals check whether the given bytes is equal
 func BytesEquals(a []byte, b []byte) bool {
