@@ -1,4 +1,4 @@
-package ulits
+package utils
 
 import (
 	"database/sql/driver"

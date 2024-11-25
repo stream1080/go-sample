@@ -8,7 +8,7 @@ import (
 	"go-sample/pkg/encrypt"
 	"go-sample/pkg/jwt"
 	"go-sample/pkg/response"
-	"go-sample/pkg/ulits"
+	"go-sample/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -31,7 +31,7 @@ func (u *UserApi) SendCode(c *gin.Context) {
 		return
 	}
 
-	code := ulits.GetCode()
+	code := utils.GetCode()
 	_, err := global.RDB.Set(form.Email, code, 5*60*time.Minute).Result()
 	if err != nil {
 		zap.S().Errorf("Set Code Error:%v \n", err)
@@ -39,7 +39,7 @@ func (u *UserApi) SendCode(c *gin.Context) {
 		return
 	}
 	content := []byte("您的验证码为：" + code + ", 5分钟内有效, 请及时操作。")
-	ulits.SendMail(form.Email, content)
+	utils.SendMail(form.Email, content)
 
 	response.Success(c, nil)
 }
@@ -85,7 +85,7 @@ func (u *UserApi) Register(c *gin.Context) {
 	}
 
 	// 数据的插入
-	uuid := ulits.GetUUID()
+	uuid := utils.GetUUID()
 	user := &models.User{
 		UUID:     uuid,
 		UserName: form.Username,
