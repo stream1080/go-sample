@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+const (
+	DateOnly = "2006-01-02"
+	DateTime = "2006-01-02 15:04:05"
+)
+
 type (
 	LocalTime time.Time
 	LocalDate time.Time
@@ -24,12 +29,12 @@ func NowDate() *LocalDate {
 
 func (t *LocalTime) MarshalJSON() ([]byte, error) {
 	tTime := time.Time(*t)
-	return []byte(fmt.Sprintf("\"%v\"", tTime.Format(time.DateTime))), nil
+	return []byte(fmt.Sprintf("\"%v\"", tTime.Format(DateTime))), nil
 }
 
 func (t *LocalTime) UnmarshalJSON(data []byte) error {
 	timeStr := strings.Trim(string(data), "\"")
-	t1, err := time.ParseInLocation(time.DateTime, timeStr, time.Local)
+	t1, err := time.ParseInLocation(DateTime, timeStr, time.Local)
 	*t = LocalTime(t1)
 	if err != nil {
 		return err
@@ -54,17 +59,17 @@ func (t *LocalTime) Scan(v any) error {
 }
 
 func (t *LocalTime) String() string {
-	return time.Time(*t).Format(time.DateTime)
+	return time.Time(*t).Format(DateTime)
 }
 
 func (t *LocalDate) MarshalJSON() ([]byte, error) {
 	tTime := time.Time(*t)
-	return []byte(fmt.Sprintf("\"%v\"", tTime.Format(time.DateOnly))), nil
+	return []byte(fmt.Sprintf("\"%v\"", tTime.Format(DateOnly))), nil
 }
 
 func (t *LocalDate) UnmarshalJSON(data []byte) error {
 	timeStr := strings.Trim(string(data), "\"")
-	t1, err := time.ParseInLocation(time.DateOnly, timeStr, time.Local)
+	t1, err := time.ParseInLocation(DateOnly, timeStr, time.Local)
 	*t = LocalDate(t1)
 	if err != nil {
 		return err
@@ -89,5 +94,5 @@ func (t *LocalDate) Scan(v any) error {
 }
 
 func (t *LocalDate) String() string {
-	return time.Time(*t).Format(time.DateOnly)
+	return time.Time(*t).Format(DateOnly)
 }
