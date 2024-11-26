@@ -1,6 +1,7 @@
 package uuid
 
 import (
+	"encoding/base64"
 	"strings"
 	"sync"
 	"time"
@@ -39,4 +40,13 @@ func New() string {
 func UUID16() string {
 	uuidStr := strings.ReplaceAll(New(), "-", "")
 	return uuidStr[0:16]
+}
+
+func EncodeBase64(s string) string {
+	return base64.StdEncoding.EncodeToString([]byte(s))
+}
+
+func DecodeBase64(s string) string {
+	decoded, _ := base64.StdEncoding.DecodeString(s)
+	return string(decoded)
 }
