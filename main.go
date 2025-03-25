@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -21,7 +22,7 @@ func main() {
 
 	go func() {
 		err := r.Run(fmt.Sprintf(":%d", global.Conf.ServerConfig.Port))
-		if err != nil && err != http.ErrServerClosed {
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			zap.S().Panicf("listen: %s\n", err)
 		}
 	}()
