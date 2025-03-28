@@ -6,8 +6,6 @@
 *.swp
 *.rdb
 
-# binary
-
 # go vendor
 vendor
 
@@ -17,7 +15,7 @@ vendor
 # mac
 *.DS_Store
 
-# gogland
+# goland
 *.idea
 
 # paw
