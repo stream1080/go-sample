@@ -3,25 +3,20 @@ package middlewares
 import (
 	"strings"
 
+	"go-sample/consts"
 	"go-sample/pkg/jwt"
 	"go-sample/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	AuthHeader = "Authorization"
-	Bearer     = "Bearer"
-	CtxUserKey = "user"
-)
-
 // Auth 登录校验中间件
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		auth := c.GetHeader(AuthHeader)
+		auth := c.GetHeader(consts.AuthHeader)
 		parts := strings.SplitN(auth, " ", 2)
-		if !(len(parts) == 2 && parts[0] == Bearer) {
+		if !(len(parts) == 2 && parts[0] == consts.Bearer) {
 			response.Error(c, response.Unauthorized)
 			c.Abort()
 			return
@@ -34,7 +29,7 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 
-		c.Set(CtxUserKey, user)
+		c.Set(consts.CtxUserKey, user)
 		c.Next()
 	}
 }

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"time"
 
 	"go-sample/global"
@@ -84,11 +85,8 @@ func (u *UserApi) Register(c *gin.Context) {
 		return
 	}
 
-	// 数据的插入
-	uuid := utils.GetUUID()
 	user := &models.User{
-		UUID:     uuid,
-		UserName: form.Username,
+		Username: form.Username,
 		Password: encrypt.Md5(form.Password),
 		Mobile:   form.Mobile,
 	}
@@ -99,7 +97,7 @@ func (u *UserApi) Register(c *gin.Context) {
 	}
 
 	// 生成 token
-	userClaims := jwt.NewClaims(user.UUID, user.UserName, user.Role)
+	userClaims := jwt.NewClaims(user.ID, user.Username, user.Role)
 	token, err := jwt.NewToken(userClaims, "")
 	if err != nil {
 		response.Error(c, response.ServerError)
@@ -126,7 +124,7 @@ func (u *UserApi) Login(c *gin.Context) {
 	user := &models.User{}
 	err := global.DB.Where("username = ? and password = ?", form.Username, form.Password).First(&user).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			response.Error(c, response.InvalidArgs)
 			return
 		}
@@ -135,7 +133,7 @@ func (u *UserApi) Login(c *gin.Context) {
 		return
 	}
 
-	userClaims := jwt.NewClaims(user.UUID, user.UserName, user.Role)
+	userClaims := jwt.NewClaims(user.ID, user.Username, user.Role)
 	token, err := jwt.NewToken(userClaims, "")
 	if err != nil {
 		response.Error(c, response.Unauthorized)
