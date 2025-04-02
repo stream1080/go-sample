@@ -3,19 +3,14 @@ package jwt
 import "github.com/dgrijalva/jwt-go"
 
 type UserClaims struct {
-	UUID     string `json:"uuid"`
-	UserName string `json:"username"`
+	ID       uint64 `json:"id"`
+	Username string `json:"username"`
 	Role     int    `json:"role"`
 	jwt.StandardClaims
 }
 
-func NewClaims(uuid, username string, role int) *UserClaims {
-	return &UserClaims{
-		uuid,
-		username,
-		role,
-		jwt.StandardClaims{},
-	}
+func NewClaims(id uint64, username string, role int) *UserClaims {
+	return &UserClaims{id, username, role, jwt.StandardClaims{}}
 }
 
 // NewToken 生成 token
