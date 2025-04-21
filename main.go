@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"errors"
 	"fmt"
 	"net/http"
@@ -14,11 +15,14 @@ import (
 	"go.uber.org/zap"
 )
 
+//go:embed dist
+var dist embed.FS
+
 func main() {
 
 	global.Init()
 
-	r := router.Init()
+	r := router.Handler(dist)
 
 	go func() {
 		err := r.Run(fmt.Sprintf(":%d", global.Conf.ServerConfig.Port))
