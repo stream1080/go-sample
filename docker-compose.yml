@@ -1,30 +1,57 @@
 version: "3"
 
 services:
-
-  redis-sample:
-    image: redis:5.0.7
-    container_name: redis-sample
-    restart: always
-    ports:
-      - '6379:6379'
-
-  mysql-sample:
-    image: mysql:8.0.19
-    container_name: mysql-sample
-    restart: always
-    ports:
-      - '3306:3306'
-    environment:
-      - MYSQL_DATABASE=demo
-      - MYSQL_ROOT_PASSWORD=123456
-
   go-sample:
     container_name: go-sample
-    restart: always
-    build: .
-    depends_on:
-      - mysql-sample
-      - redis-sample
+    build:
+      context: ./
+      dockerfile: Dockerfile
     ports:
       - '8080:8080'
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - sample-network
+    restart: unless-stopped
+  mysql:
+    image: mysql:8.0.26
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=demo
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - sample-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  redis:
+    image: redis:7.4
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - sample-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  sample-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  redis-data:
